@@ -20,6 +20,7 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import coil.size.Scale
 import com.bimalghara.tv_shows.domain.model.TvShows
+import com.bimalghara.tv_shows.ui.base.MyImage
 import java.util.*
 
 @Composable
@@ -37,20 +38,7 @@ fun GridItem(tvSHow: TvShows, onItemClick: () -> Unit) {
         Column(
             modifier = Modifier.fillMaxWidth()
         ) {
-            AsyncImage(
-                model = ImageRequest.Builder(LocalContext.current)
-                    .data(tvSHow.posterPath)
-                    .crossfade(true)
-                    .apply {
-                        scale(Scale.FILL)
-                    }
-                    .build(),
-                contentDescription = null,
-                contentScale = ContentScale.Crop,
-                modifier = Modifier
-                    .fillMaxSize()
-                    .height(260.dp)
-            )
+            MyImage(url = tvSHow.posterPath)
             Text(
                 text = tvSHow.name.uppercase(Locale.ROOT),
                 style = MaterialTheme.typography.h4,
