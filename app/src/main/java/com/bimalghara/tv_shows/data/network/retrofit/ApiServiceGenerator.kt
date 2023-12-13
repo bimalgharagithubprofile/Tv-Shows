@@ -13,6 +13,7 @@ import javax.inject.Singleton
 
 private const val timeoutRead = 30   //In seconds
 private const val contentType = "Content-Type"
+private const val accept = "accept"
 private const val contentTypeValue = "application/json"
 private const val timeoutConnect = 30   //In seconds
 
@@ -22,11 +23,15 @@ class ApiServiceGenerator @Inject constructor() {
     private val okHttpBuilder: OkHttpClient.Builder = OkHttpClient.Builder()
     private val retrofit: Retrofit
 
+    private val bearerToken = "eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJhMzdkZWEzNTc0ZjZhNmI2NGU4OGVjYmMwOTNhODdkNyIsInN1YiI6IjY1Nzk0YmFmZWM4YTQzMDBjMzNhYmI4MCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.l3p3LHJVsrwtwoC2j8KycGXHRSeVBWbR-wUz_Emvf9Y"
+
     private var headerInterceptor = Interceptor { chain ->
         val original = chain.request()
 
         val request = original.newBuilder()
                 .header(contentType, contentTypeValue)
+                .header(accept, contentTypeValue)
+                .addHeader("Authorization", "Bearer $bearerToken")
                 .method(original.method, original.body)
                 .build()
 
