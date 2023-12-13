@@ -10,5 +10,5 @@ class TVShowsApi @Inject constructor(private val serviceGenerator: ApiServiceGen
 
      suspend fun getAllTVShows(): ResponseTvShows = apiRequest(tvShowsService::getAllTVShows)
 
-     suspend fun getShowDetails(id:Int): String = apiRequest{tvShowsService.getShowDetails(id)}
+     suspend fun getAllSimilarShows(id:Int): ResponseTvShows = apiRequest{tvShowsService.getSimilarShows(id)}
 }

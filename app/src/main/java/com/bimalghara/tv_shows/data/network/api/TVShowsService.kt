@@ -11,8 +11,8 @@ interface TVShowsService {
     suspend fun getAllTVShows(): ResponseTvShows
 
 
-    @GET("tv/{id}?language=en-US")
-    suspend fun getShowDetails(@Path("id") id: Int): String
+    @GET("tv/{id}/similar?language=en-US&page=1")
+    suspend fun getSimilarShows(@Path("id") id: Int): ResponseTvShows
 
 
 }
