@@ -13,7 +13,8 @@ class FetchSimilarShowsUseCase @Inject constructor(private val tvShowsRepository
         emit(DataStateWrapper.Loading())
         try {
             val result = tvShowsRepositorySource.getSimilarShowsList(id)
-            emit(DataStateWrapper.Success(data = result))
+            val sortedResult = result.sortedByDescending { it.popularity }
+            emit(DataStateWrapper.Success(data = sortedResult))
         } catch (e: Exception) {
             emit(DataStateWrapper.Error(errorMsg = e.message))
         }
