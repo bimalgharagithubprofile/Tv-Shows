@@ -18,6 +18,10 @@ import androidx.navigation.NavController
 import com.bimalghara.tv_shows.R
 import com.bimalghara.tv_shows.domain.model.DataStateWrapper
 import com.bimalghara.tv_shows.ui.base.MyImage
+import com.bimalghara.tv_shows.ui.utils.Screen
+import com.google.gson.Gson
+import java.net.URLEncoder
+import java.nio.charset.StandardCharsets
 import java.util.*
 
 @ExperimentalAnimationApi
@@ -75,16 +79,12 @@ fun ShowDetailsScreen(
                             .padding(5.dp)
                     ) {
                         items(stateSimilarShows.data!!.size) { index ->
-                            Card(
-                                backgroundColor = MaterialTheme.colors.background,
-                                modifier = Modifier
-                                    .padding(5.dp)
-                                    .fillMaxWidth(),
-                                elevation = 6.dp,
-                            ) {
-                                MyImage(
-                                    height = 150.dp,
-                                    url = stateSimilarShows.data[index].posterPath
+                            SimilarItem(stateSimilarShows.data[index]) {
+                                val gson = Gson()
+                                val showStr = gson.toJson(stateSimilarShows.data[index])
+                                val encodedShowStr = URLEncoder.encode(showStr, StandardCharsets.UTF_8.toString())
+                                navController.navigate(
+                                    Screen.ShowDetailsScreen.route + "/$encodedShowStr"
                                 )
                             }
                         }
