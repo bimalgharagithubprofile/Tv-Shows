@@ -1,5 +1,6 @@
 package com.bimalghara.tv_shows.domain.use_cases
 
+import com.bimalghara.tv_shows.domain.model.DataStateWrapper
 import com.bimalghara.tv_shows.domain.model.TvShows
 import com.bimalghara.tv_shows.domain.repository.TVShowsRepositorySource
 import kotlinx.coroutines.flow.Flow
@@ -8,12 +9,13 @@ import javax.inject.Inject
 
 class FetchTVShowsUseCase @Inject constructor(private val tvShowsRepositorySource: TVShowsRepositorySource) {
 
-    suspend operator fun invoke(): Flow<List<TvShows>> = flow {
+    suspend operator fun invoke(): Flow<DataStateWrapper<List<TvShows>>> = flow {
+        emit(DataStateWrapper.Loading())
         try {
             val result = tvShowsRepositorySource.getTVShowsList()
-            emit(result)
+            emit(DataStateWrapper.Success(data = result))
         } catch (e: Exception) {
-            throw e
+            emit(DataStateWrapper.Error(errorMsg = e.message))
         }
     }
 

@@ -5,6 +5,8 @@ sealed class DataStateWrapper<T>(
     val errorMsg: String? = null
 ) {
 
+    class Idle<T> : DataStateWrapper<T>()
+
     class Loading<T> : DataStateWrapper<T>()
 
     class Success<T>(data: T?) : DataStateWrapper<T>(data = data)

@@ -15,6 +15,7 @@ private const val timeoutRead = 30   //In seconds
 private const val contentType = "Content-Type"
 private const val accept = "accept"
 private const val contentTypeValue = "application/json"
+private const val authorization = "Authorization"
 private const val timeoutConnect = 30   //In seconds
 
 
@@ -31,7 +32,7 @@ class ApiServiceGenerator @Inject constructor() {
         val request = original.newBuilder()
                 .header(contentType, contentTypeValue)
                 .header(accept, contentTypeValue)
-                .addHeader("Authorization", "Bearer $bearerToken")
+                .addHeader(authorization, "Bearer $bearerToken")
                 .method(original.method, original.body)
                 .build()
 
