@@ -15,8 +15,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.bimalghara.tv_shows.ui.details.DetailViewUiState.Companion.ARG_IMAGE_URL
-import com.bimalghara.tv_shows.ui.details.DetailViewUiState.Companion.ARG_NAME
+import com.bimalghara.tv_shows.domain.model.TvShows
+import com.bimalghara.tv_shows.ui.details.DetailViewUiState.Companion.ARG_SHOW
 import com.bimalghara.tv_shows.ui.details.ShowDetailsScreen
 import com.bimalghara.tv_shows.ui.details.ShowDetailsViewModel
 import com.bimalghara.tv_shows.ui.shows.ShowsViewModel
@@ -48,16 +48,10 @@ class MainActivity : AppCompatActivity() {
                             TVShowsScreen(navController = navController, viewModel = viewModel)
                         }
                         composable(
-                            route = Screen.ShowDetailsScreen.route +
-                                    "/{$ARG_NAME}/{$ARG_IMAGE_URL}",
+                            route = Screen.ShowDetailsScreen.route + "/{$ARG_SHOW}",
                             arguments = listOf(
                                 navArgument(
-                                    name = ARG_NAME
-                                ) {
-                                    type = NavType.StringType
-                                },
-                                navArgument(
-                                    name = ARG_IMAGE_URL
+                                    name = ARG_SHOW
                                 ) {
                                     type = NavType.StringType
                                 }

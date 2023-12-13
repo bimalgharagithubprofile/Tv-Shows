@@ -8,6 +8,7 @@ fun ResponseTvShows.toDomain(): List<TvShows> {
         TvShows(
             id = cloudResponse.id ?: 0,
             name = cloudResponse.name ?: "",
+            overview = cloudResponse.overview ?: "",
             posterPath = "https://image.tmdb.org/t/p/w500${cloudResponse.posterPath ?: ""}",
             popularity = cloudResponse.popularity ?: 0.0
         )
