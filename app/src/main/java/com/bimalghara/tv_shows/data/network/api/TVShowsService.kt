@@ -7,7 +7,7 @@ import retrofit2.http.Path
 interface TVShowsService {
 
 
-    @GET("trending/tv/day?language=en-US")
+    @GET("trending/tv/week?language=en-US")
     suspend fun getAllTVShows(): ResponseTvShows
 
 
