@@ -76,7 +76,7 @@ class ShowDetailsViewModel @Inject constructor(
         state.value.show?.let {
             wrapEspressoIdlingResource {
                 if (_favourite.value) {
-                    //dataStoreProvider.removeFavourite(it)
+                    dataStoreProvider.removeFavourite(it)
                     _favourite.value = false
                 } else {
                     dataStoreProvider.addFavourite(it)

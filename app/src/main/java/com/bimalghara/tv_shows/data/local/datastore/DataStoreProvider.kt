@@ -29,6 +29,14 @@ class DataStoreProvider @Inject constructor(@ApplicationContext private val cont
             it[KEY_FAVOURITES] = Gson().toJson(datSet)
         }
     }
+    suspend fun removeFavourite(data:TvShows){
+        val datSet = getFavourites().toMutableList()
+        datSet.remove(data)
+
+        dataStore.edit {
+            it[KEY_FAVOURITES] = Gson().toJson(datSet)
+        }
+    }
     suspend fun getFavourites(): List<TvShows> {
         val preferences = dataStore.data.first()
         val data = preferences[KEY_FAVOURITES]
