@@ -56,6 +56,16 @@ fun TVShowsScreen(
                 },
                 actions = {
                     IconButton(
+                        onClick = {
+                            //
+                        }
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Favorite,
+                            contentDescription = stringResource(id = R.string.my_favourites)
+                        )
+                    }
+                    IconButton(
                         onClick = { viewModel.onActiveChange(true) }
                     ) {
                         Icon(
@@ -95,7 +105,7 @@ fun TVShowsScreen(
                 trailingIcon = {
                     Icon(
                         modifier = Modifier.clickable {
-                            if(stateSearchText.isNotEmpty()){
+                            if (stateSearchText.isNotEmpty()) {
                                 viewModel.clearSearchText()
                             } else {
                                 viewModel.onActiveChange(false)
