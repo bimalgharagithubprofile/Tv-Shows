@@ -1,6 +1,7 @@
 package com.bimalghara.tv_shows.ui.details
 
 import android.util.Log
+import android.widget.Toast
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -31,6 +32,9 @@ class ShowDetailsViewModel @Inject constructor(
     private var _state = MutableStateFlow(DetailViewUiState())
     val state = _state.asStateFlow()
 
+    private var _favourite = MutableStateFlow(false)
+    val favourite = _favourite.asStateFlow()
+
     private var _stateSimilarShows =
         MutableStateFlow<DataStateWrapper<List<TvShows>>>(DataStateWrapper.Idle())
     val stateSimilarShows = _stateSimilarShows.asStateFlow()
@@ -55,6 +59,14 @@ class ShowDetailsViewModel @Inject constructor(
             fetchSimilarShowsUseCase(id).collect {
                 _stateSimilarShows.value = it
             }
+        }
+    }
+
+    fun favoriteClickHandle() {
+        if(_favourite.value){
+            _favourite.value = false
+        } else {
+            _favourite.value = true
         }
     }
 }

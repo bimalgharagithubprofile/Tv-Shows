@@ -5,18 +5,17 @@ import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Scaffold
-import androidx.compose.material.rememberScaffoldState
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.bimalghara.tv_shows.R
 import com.bimalghara.tv_shows.domain.model.DataStateWrapper
 import com.bimalghara.tv_shows.ui.base.MyErrorMessage
 import com.bimalghara.tv_shows.ui.base.MyProgressBar
-import com.bimalghara.tv_shows.ui.base.MyTopAppBar
 import com.bimalghara.tv_shows.ui.utils.Screen
 import com.google.gson.Gson
 import java.net.URLEncoder
@@ -35,7 +34,15 @@ fun TVShowsScreen(
     Scaffold(
         scaffoldState = scaffoldState,
         topBar = {
-            MyTopAppBar()
+            TopAppBar(
+                title = {
+                    Text(
+                        text = stringResource(id = R.string.app_name),
+                        color = MaterialTheme.colors.onPrimary
+                    )
+                },
+                backgroundColor = MaterialTheme.colors.primary,
+            )
         },
         backgroundColor = MaterialTheme.colors.surface,
         contentColor = MaterialTheme.colors.onSurface,
