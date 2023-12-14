@@ -87,7 +87,7 @@ fun TVShowsScreen(
                 },
                 onSearch = {
                     searchHistory.add(it)
-                    viewModel.onSearch()
+                    viewModel.onSearch(it)
                 },
                 active = true,
                 onActiveChange = {
@@ -106,9 +106,9 @@ fun TVShowsScreen(
                     Icon(
                         modifier = Modifier.clickable {
                             if (stateSearchText.isNotEmpty()) {
-                                viewModel.clearSearchText()
+                                viewModel.clearSearch()
                             } else {
-                                viewModel.onActiveChange(false)
+                                viewModel.closeSearch()
                             }
                         },
                         imageVector = Icons.Default.Close,
