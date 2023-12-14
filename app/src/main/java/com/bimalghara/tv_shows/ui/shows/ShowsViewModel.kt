@@ -35,4 +35,21 @@ class ShowsViewModel @Inject constructor(
             }
         }
     }
+
+
+    fun onActiveChange(active: Boolean) {
+        _stateSearchActive.value = active
+
+    }
+    fun onQueryChange(query: String) {
+        _stateSearchText.value = query
+    }
+    fun onSearch() {
+        _stateSearchActive.value = false
+    }
+
+    fun clearSearchText() {
+        _stateSearchText.value = ""
+    }
+
 }

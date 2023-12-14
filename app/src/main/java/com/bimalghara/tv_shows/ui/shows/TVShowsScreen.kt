@@ -2,12 +2,18 @@ package com.bimalghara.tv_shows.ui.shows
 
 import android.annotation.SuppressLint
 import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.FavoriteBorder
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -33,6 +39,7 @@ fun TVShowsScreen(
     viewModel: ShowsViewModel
 ) {
     val stateSearchActive = viewModel.stateSearchActive.collectAsState().value
+    val stateSearchText = viewModel.stateSearchText.collectAsState().value
     val state = viewModel.state.collectAsState().value
 
     Scaffold(
@@ -40,7 +47,8 @@ fun TVShowsScreen(
         topBar = {
             TopAppBar(
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primary
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    actionIconContentColor = MaterialTheme.colorScheme.onPrimary
                 ),
                 title = {
                     Text(
@@ -48,15 +56,59 @@ fun TVShowsScreen(
                         color = MaterialTheme.colorScheme.onPrimary
                     )
                 },
+                actions = {
+                    IconButton(
+                        onClick = { viewModel.onActiveChange(true) }
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Search,
+                            contentDescription = stringResource(id = R.string.search_hint)
+                        )
+                    }
+                }
             )
         },
         contentColor = MaterialTheme.colorScheme.onSurface,
     ) { paddingValues ->
 
-        if(stateSearchActive){
-            /*SearchBar(query = , onQueryChange = , onSearch = , active = , onActiveChange = ) {
-
-            }*/
+        if (stateSearchActive) {
+            SearchBar(
+                query = stateSearchText,
+                onQueryChange = {
+                    viewModel.onQueryChange(it)
+                },
+                onSearch = {
+                    viewModel.onSearch()
+                },
+                active = true,
+                onActiveChange = {
+                    viewModel.onActiveChange(it)
+                },
+                placeholder = {
+                    Text(text = stringResource(id = R.string.search_hint))
+                },
+                leadingIcon = {
+                    Icon(
+                        imageVector = Icons.Default.Search,
+                        contentDescription = stringResource(id = R.string.search_hint)
+                    )
+                },
+                trailingIcon = {
+                    Icon(
+                        modifier = Modifier.clickable {
+                            if(stateSearchText.isNotEmpty()){
+                                viewModel.clearSearchText()
+                            } else {
+                                viewModel.onActiveChange(false)
+                            }
+                        },
+                        imageVector = Icons.Default.Close,
+                        contentDescription = stringResource(id = R.string.search_close)
+                    )
+                }
+            ) {
+                // previously searched history
+            }
         }
 
         when (state) {
@@ -68,7 +120,9 @@ fun TVShowsScreen(
             }
             is DataStateWrapper.Success -> {
                 LazyVerticalGrid(
-                    modifier = Modifier.fillMaxSize().padding(paddingValues),
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(paddingValues),
                     columns = GridCells.Fixed(2)
                 ) {
                     items(state.data!!.size) { index ->
@@ -77,7 +131,8 @@ fun TVShowsScreen(
                         ) {
                             val gson = Gson()
                             val showStr = gson.toJson(state.data[index])
-                            val encodedShowStr = URLEncoder.encode(showStr, StandardCharsets.UTF_8.toString())
+                            val encodedShowStr =
+                                URLEncoder.encode(showStr, StandardCharsets.UTF_8.toString())
                             navController.navigate(
                                 Screen.ShowDetailsScreen.route + "/$encodedShowStr"
                             )

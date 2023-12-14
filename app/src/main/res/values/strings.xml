@@ -1,6 +1,8 @@
 <resources>
     <string name="app_name">TV-Shows</string>
 
+    <string name="search_hint">Search tv-shows…</string>
+    <string name="search_close">Close Search</string>
     <string name="descriptions">Descriptions</string>
     <string name="similar_shows">Similar shows</string>
 </resources>
