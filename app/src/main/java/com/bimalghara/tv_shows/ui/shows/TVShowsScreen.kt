@@ -3,20 +3,16 @@ package com.bimalghara.tv_shows.ui.shows
 import android.annotation.SuppressLint
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.filled.FavoriteBorder
-import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -41,6 +37,8 @@ fun TVShowsScreen(
     val stateSearchActive = viewModel.stateSearchActive.collectAsState().value
     val stateSearchText = viewModel.stateSearchText.collectAsState().value
     val state = viewModel.state.collectAsState().value
+
+    val searchHistory = remember { mutableStateListOf<String>() }
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -78,6 +76,7 @@ fun TVShowsScreen(
                     viewModel.onQueryChange(it)
                 },
                 onSearch = {
+                    searchHistory.add(it)
                     viewModel.onSearch()
                 },
                 active = true,
@@ -108,6 +107,16 @@ fun TVShowsScreen(
                 }
             ) {
                 // previously searched history
+                searchHistory.forEach {
+                    Row(modifier = Modifier.padding(all = 14.dp)) {
+                        Icon(
+                            modifier = Modifier.padding(end = 10.dp),
+                            imageVector = Icons.Default.History,
+                            contentDescription = stringResource(id = R.string.history)
+                        )
+                        Text(text = it)
+                    }
+                }
             }
         }
 
