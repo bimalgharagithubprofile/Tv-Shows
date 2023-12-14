@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bimalghara.tv_shows.BuildConfig
 import com.bimalghara.tv_shows.common.dispatcher.DispatcherProviderSource
+import com.bimalghara.tv_shows.data.local.datastore.DataStoreProvider
 import com.bimalghara.tv_shows.domain.model.DataStateWrapper
 import com.bimalghara.tv_shows.domain.model.TvShows
 import com.bimalghara.tv_shows.domain.use_cases.FetchSimilarShowsUseCase
@@ -25,6 +26,7 @@ import javax.inject.Inject
 class ShowDetailsViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     private val dispatcherProviderSource: DispatcherProviderSource,
+    private val dataStoreProvider: DataStoreProvider,
     private val fetchSimilarShowsUseCase: FetchSimilarShowsUseCase
 ) : ViewModel() {
     private val logTag = "ShowDetailsViewModel"
@@ -50,7 +52,15 @@ class ShowDetailsViewModel @Inject constructor(
             )
             if(BuildConfig.DEBUG) Log.d(logTag, "state::${state.value}")
 
+            isFavourite()
+
             if(stateSimilarShows.value.data.isNullOrEmpty()) loadSimilarShows(show.id)
+        }
+    }
+
+    private fun isFavourite() = viewModelScope.launch(dispatcherProviderSource.io) {
+        if(dataStoreProvider.getFavourites().contains(state.value.show)){
+            _favourite.value = true
         }
     }
 
@@ -62,11 +72,17 @@ class ShowDetailsViewModel @Inject constructor(
         }
     }
 
-    fun favoriteClickHandle() {
-        if(_favourite.value){
-            _favourite.value = false
-        } else {
-            _favourite.value = true
+    fun favoriteClickHandle() = viewModelScope.launch(dispatcherProviderSource.io) {
+        state.value.show?.let {
+            wrapEspressoIdlingResource {
+                if (_favourite.value) {
+                    //dataStoreProvider.removeFavourite(it)
+                    _favourite.value = false
+                } else {
+                    dataStoreProvider.addFavourite(it)
+                    _favourite.value = true
+                }
+            }
         }
     }
 }
