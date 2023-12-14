@@ -7,6 +7,7 @@ interface TVShowsRepositorySource {
 
     suspend fun getTVShowsList(): List<TvShows>
 
+    suspend fun searchTVShowsList(query: String): List<TvShows>
 
     suspend fun getSimilarShowsList(id:Int): List<TvShows>
 

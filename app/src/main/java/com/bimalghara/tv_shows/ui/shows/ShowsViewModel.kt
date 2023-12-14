@@ -6,6 +6,7 @@ import com.bimalghara.tv_shows.common.dispatcher.DispatcherProviderSource
 import com.bimalghara.tv_shows.domain.model.DataStateWrapper
 import com.bimalghara.tv_shows.domain.model.TvShows
 import com.bimalghara.tv_shows.domain.use_cases.FetchTVShowsUseCase
+import com.bimalghara.tv_shows.domain.use_cases.SearchTVShowsUseCase
 import com.bimalghara.tv_shows.utils.wrapEspressoIdlingResource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
@@ -16,7 +17,8 @@ import javax.inject.Inject
 @HiltViewModel
 class ShowsViewModel @Inject constructor(
     private val dispatcherProviderSource: DispatcherProviderSource,
-    private val fetchTVShowsUseCase: FetchTVShowsUseCase
+    private val fetchTVShowsUseCase: FetchTVShowsUseCase,
+    private val searchTVShowsUseCase: SearchTVShowsUseCase
 ) : ViewModel() {
 
     private var _stateSearchActive = MutableStateFlow(false)
@@ -58,19 +60,11 @@ class ShowsViewModel @Inject constructor(
     fun onSearch(query: String) = viewModelScope.launch(dispatcherProviderSource.io) {
         _stateSearchActive.value = false
 
-        _searchedShows.value = DataStateWrapper.Loading()
-        delay(3000L)
-        _searchedShows.value = DataStateWrapper.Error("Test error")
-        delay(3000L)
-        _searchedShows.value = DataStateWrapper.Success(listOf(
-            TvShows(
-                id = 46198,
-                name = "JP",
-                overview = "A brain surgeon named Minakata Jin has spent the last two years in anguish, as his fiancee lies in a vegetative state after an operation he performed.",
-                posterPath = "https://image.tmdb.org/t/p/w500/dGyyuDIDkvP2eSNgxMRrbciM1vI.jpg",
-                popularity = 20.282
-            )
-        ))
+        wrapEspressoIdlingResource {
+            searchTVShowsUseCase(query).collect {
+                _searchedShows.value = it
+            }
+        }
     }
 
     fun clearSearch() {

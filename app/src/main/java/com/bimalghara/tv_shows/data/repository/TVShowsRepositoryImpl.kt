@@ -26,6 +26,21 @@ class TVShowsRepositoryImpl @Inject constructor(private val tvShowsApi: TVShowsA
         }
     }
 
+    override suspend fun searchTVShowsList(query: String): List<TvShows> {
+        return try {
+            val response = tvShowsApi.searchAllTVShows(query)
+            if (response.results.isNotEmpty()) {
+                //extract cloud data into limited business logic usage data
+                val breeds = response.toDomain()
+                if(BuildConfig.DEBUG) Log.d(logTag, breeds.toString())
+                breeds
+            } else throw Exception("No TV-Shows available matching - $query")
+
+        } catch (e: Exception) {
+            throw e
+        }
+    }
+
     override suspend fun getSimilarShowsList(id: Int): List<TvShows> {
         return try {
             val response = tvShowsApi.getAllSimilarShows(id)
