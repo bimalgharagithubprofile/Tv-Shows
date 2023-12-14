@@ -1,9 +1,6 @@
 package com.bimalghara.tv_shows.data.local.room
 
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
-import androidx.room.Query
+import androidx.room.*
 import com.bimalghara.tv_shows.domain.model.TvShowsEntity
 import kotlinx.coroutines.flow.Flow
 
@@ -18,7 +15,7 @@ interface TvShowsDao {
     @Query("SELECT * FROM TvShowsEntity ORDER BY popularity DESC")
     fun getTVShows(): Flow<List<TvShowsEntity>>
 
-    @Query("DELETE FROM TvShowsEntity")
-    suspend fun truncate()
+    @Update
+    suspend fun updateTvShow(show: TvShowsEntity): Int
 
 }

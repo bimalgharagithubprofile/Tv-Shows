@@ -39,6 +39,11 @@ class TVShowsRepositoryImpl @Inject constructor(
         return tvShowsDao.getTVShows()
     }
 
+    override suspend fun updateFavourite(tvShows: TvShowsEntity): Int {
+        return tvShowsDao.updateTvShow(tvShows)
+    }
+
+
 
     override suspend fun searchTVShowsList(query: String): List<TvShowsEntity> {
         return try {

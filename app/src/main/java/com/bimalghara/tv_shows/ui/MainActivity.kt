@@ -43,7 +43,6 @@ class MainActivity : AppCompatActivity() {
                     ) {
                         composable(route = Screen.TVShowsScreen.route) {
                             val viewModel = hiltViewModel<ShowsViewModel>()
-                            viewModel.downloadData()
                             TVShowsScreen(navController = navController, viewModel = viewModel)
                         }
                         composable(

@@ -8,6 +8,7 @@ import com.bimalghara.tv_shows.BuildConfig
 import com.bimalghara.tv_shows.common.dispatcher.DispatcherProviderSource
 import com.bimalghara.tv_shows.domain.model.DataStateWrapper
 import com.bimalghara.tv_shows.domain.model.TvShowsEntity
+import com.bimalghara.tv_shows.domain.use_cases.FavouriteTVShowsUseCase
 import com.bimalghara.tv_shows.domain.use_cases.FetchSimilarShowsUseCase
 import com.bimalghara.tv_shows.ui.details.DetailViewUiState.Companion.ARG_SHOW
 import com.bimalghara.tv_shows.utils.wrapEspressoIdlingResource
@@ -24,6 +25,7 @@ import javax.inject.Inject
 class ShowDetailsViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     private val dispatcherProviderSource: DispatcherProviderSource,
+    private val favouriteTVShowsUseCase: FavouriteTVShowsUseCase,
     private val fetchSimilarShowsUseCase: FetchSimilarShowsUseCase
 ) : ViewModel() {
     private val logTag = "ShowDetailsViewModel"
@@ -65,11 +67,11 @@ class ShowDetailsViewModel @Inject constructor(
         state.value.show?.let {
             wrapEspressoIdlingResource {
                 if (_favourite.value) {
-                    //dao.removeFavourite(it)
-                    _favourite.value = false
+                    val result = favouriteTVShowsUseCase(it, false)
+                    if(result > 0) _favourite.value = false
                 } else {
-                    _favourite.value = true
-                    //dao.AddFavourite(it)
+                    val result = favouriteTVShowsUseCase(it, true)
+                    if(result > 0) _favourite.value = true
                 }
             }
         }

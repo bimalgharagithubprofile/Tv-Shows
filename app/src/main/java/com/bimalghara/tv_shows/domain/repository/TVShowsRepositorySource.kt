@@ -10,6 +10,8 @@ interface TVShowsRepositorySource {
 
     suspend fun getTVShowsList(): Flow<List<TvShowsEntity>>
 
+    suspend fun updateFavourite(tvShows: TvShowsEntity): Int
+
     suspend fun searchTVShowsList(query: String): List<TvShowsEntity>
 
     suspend fun getSimilarShowsList(id:Int): List<TvShowsEntity>

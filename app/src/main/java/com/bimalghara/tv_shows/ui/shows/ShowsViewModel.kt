@@ -13,6 +13,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
@@ -48,29 +49,29 @@ class ShowsViewModel @Inject constructor(
         loadData()
     }
 
-    fun downloadData() = viewModelScope.launch(dispatcherProviderSource.io) {
-        _weeklyShows.value = DataStateWrapper.Loading()
-        wrapEspressoIdlingResource {
-            try {
-                downloadTVShowsUseCase()
-            }catch (e: Exception){
-                if(_weeklyShows.value.data.isNullOrEmpty()) {
-                    _weeklyShows.value = DataStateWrapper.Error(e.localizedMessage)
-                }
-            }
-        }
-    }
 
     private fun loadData() = viewModelScope.launch {
+        _weeklyShows.value = DataStateWrapper.Loading()
         wrapEspressoIdlingResource {
             getTVShowsUseCase().collect {
                 if(it.isNotEmpty()) {
                     _weeklyShows.value = DataStateWrapper.Success(it)
+                } else {
+                    downloadData()
                 }
             }
         }
     }
 
+    private suspend fun downloadData() = withContext(dispatcherProviderSource.io){
+        try {
+            downloadTVShowsUseCase()
+        }catch (e: Exception){
+            if(_weeklyShows.value.data.isNullOrEmpty()) {
+                _weeklyShows.value = DataStateWrapper.Error(e.localizedMessage)
+            }
+        }
+    }
 
     fun onActiveChange(active: Boolean) {
         _stateSearchActive.value = active
