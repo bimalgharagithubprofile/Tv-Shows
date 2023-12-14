@@ -144,17 +144,23 @@ fun TVShowsScreen(
                         .padding(paddingValues),
                     columns = GridCells.Fixed(2)
                 ) {
-                    items(state.data!!.size) { index ->
-                        GridItem(
-                            tvSHow = state.data[index]
-                        ) {
-                            val gson = Gson()
-                            val showStr = gson.toJson(state.data[index])
-                            val encodedShowStr =
-                                URLEncoder.encode(showStr, StandardCharsets.UTF_8.toString())
-                            navController.navigate(
-                                Screen.ShowDetailsScreen.route + "/$encodedShowStr"
-                            )
+                    if(state.data.isNullOrEmpty()){
+                        item{
+                            MyErrorMessage(stringResource(id = R.string.no_results))
+                        }
+                    } else {
+                        items(state.data.size) { index ->
+                            GridItem(
+                                tvSHow = state.data[index]
+                            ) {
+                                val gson = Gson()
+                                val showStr = gson.toJson(state.data[index])
+                                val encodedShowStr =
+                                    URLEncoder.encode(showStr, StandardCharsets.UTF_8.toString())
+                                navController.navigate(
+                                    Screen.ShowDetailsScreen.route + "/$encodedShowStr"
+                                )
+                            }
                         }
                     }
                 }

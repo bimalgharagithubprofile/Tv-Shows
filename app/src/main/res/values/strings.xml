@@ -7,4 +7,5 @@
     <string name="descriptions">Descriptions</string>
     <string name="similar_shows">Similar shows</string>
     <string name="history">Search History</string>
+    <string name="no_results">No tv-shows found on server…</string>
 </resources>
