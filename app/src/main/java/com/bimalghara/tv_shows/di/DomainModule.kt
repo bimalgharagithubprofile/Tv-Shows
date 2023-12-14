@@ -2,7 +2,8 @@ package com.bimalghara.tv_shows.di
 
 import com.bimalghara.tv_shows.domain.repository.TVShowsRepositorySource
 import com.bimalghara.tv_shows.domain.use_cases.FetchSimilarShowsUseCase
-import com.bimalghara.tv_shows.domain.use_cases.FetchTVShowsUseCase
+import com.bimalghara.tv_shows.domain.use_cases.DownloadTVShowsUseCase
+import com.bimalghara.tv_shows.domain.use_cases.GetTVShowsUseCase
 import com.bimalghara.tv_shows.domain.use_cases.SearchTVShowsUseCase
 import dagger.Module
 import dagger.Provides
@@ -14,8 +15,12 @@ import dagger.hilt.components.SingletonComponent
 object DomainModule {
 
     @Provides
-    fun providesFetchTVShowsUseCase(tvShowsRepositorySource: TVShowsRepositorySource): FetchTVShowsUseCase {
-        return FetchTVShowsUseCase(tvShowsRepositorySource)
+    fun providesDownloadTVShowsUseCase(tvShowsRepositorySource: TVShowsRepositorySource): DownloadTVShowsUseCase {
+        return DownloadTVShowsUseCase(tvShowsRepositorySource)
+    }
+    @Provides
+    fun providesGetTVShowsUseCase(tvShowsRepositorySource: TVShowsRepositorySource): GetTVShowsUseCase {
+        return GetTVShowsUseCase(tvShowsRepositorySource)
     }
 
     @Provides

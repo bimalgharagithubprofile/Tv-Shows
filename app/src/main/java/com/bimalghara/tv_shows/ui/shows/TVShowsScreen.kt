@@ -56,16 +56,6 @@ fun TVShowsScreen(
                 },
                 actions = {
                     IconButton(
-                        onClick = {
-                            //
-                        }
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.Favorite,
-                            contentDescription = stringResource(id = R.string.my_favourites)
-                        )
-                    }
-                    IconButton(
                         onClick = { viewModel.onActiveChange(true) }
                     ) {
                         Icon(
@@ -138,17 +128,15 @@ fun TVShowsScreen(
                 MyErrorMessage(state.errorMsg!!)
             }
             is DataStateWrapper.Success -> {
-                LazyVerticalGrid(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(paddingValues),
-                    columns = GridCells.Fixed(2)
-                ) {
-                    if(state.data.isNullOrEmpty()){
-                        item{
-                            MyErrorMessage(stringResource(id = R.string.no_results))
-                        }
-                    } else {
+                if (state.data.isNullOrEmpty()) {
+                    MyErrorMessage(stringResource(id = R.string.no_results))
+                } else {
+                    LazyVerticalGrid(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(paddingValues),
+                        columns = GridCells.Fixed(2)
+                    ) {
                         items(state.data.size) { index ->
                             GridItem(
                                 tvSHow = state.data[index]

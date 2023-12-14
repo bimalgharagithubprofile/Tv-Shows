@@ -9,11 +9,11 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.bimalghara.tv_shows.domain.model.TvShows
+import com.bimalghara.tv_shows.domain.model.TvShowsEntity
 import com.bimalghara.tv_shows.ui.base.MyImage
 
 @Composable
-fun SimilarItem(tvSHow: TvShows, onItemClick: () -> Unit){
+fun SimilarItem(tvSHow: TvShowsEntity, onItemClick: () -> Unit){
     Card(
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.background,

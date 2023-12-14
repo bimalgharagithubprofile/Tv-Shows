@@ -1,11 +1,11 @@
 <resources>
     <string name="app_name">TV-Shows</string>
 
-    <string name="my_favourites">My Favourites</string>
+    <string name="my_favourite">My Favourite</string>
     <string name="search_hint">Search tv-shows…</string>
     <string name="search_close">Close Search</string>
     <string name="descriptions">Descriptions</string>
     <string name="similar_shows">Similar shows</string>
     <string name="history">Search History</string>
-    <string name="no_results">No tv-shows found on server…</string>
+    <string name="no_results">No tv-shows available…</string>
 </resources>

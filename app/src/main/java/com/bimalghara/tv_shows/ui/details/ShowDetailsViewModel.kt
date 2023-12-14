@@ -1,15 +1,13 @@
 package com.bimalghara.tv_shows.ui.details
 
 import android.util.Log
-import android.widget.Toast
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bimalghara.tv_shows.BuildConfig
 import com.bimalghara.tv_shows.common.dispatcher.DispatcherProviderSource
-import com.bimalghara.tv_shows.data.local.datastore.DataStoreProvider
 import com.bimalghara.tv_shows.domain.model.DataStateWrapper
-import com.bimalghara.tv_shows.domain.model.TvShows
+import com.bimalghara.tv_shows.domain.model.TvShowsEntity
 import com.bimalghara.tv_shows.domain.use_cases.FetchSimilarShowsUseCase
 import com.bimalghara.tv_shows.ui.details.DetailViewUiState.Companion.ARG_SHOW
 import com.bimalghara.tv_shows.utils.wrapEspressoIdlingResource
@@ -26,7 +24,6 @@ import javax.inject.Inject
 class ShowDetailsViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     private val dispatcherProviderSource: DispatcherProviderSource,
-    private val dataStoreProvider: DataStoreProvider,
     private val fetchSimilarShowsUseCase: FetchSimilarShowsUseCase
 ) : ViewModel() {
     private val logTag = "ShowDetailsViewModel"
@@ -38,7 +35,7 @@ class ShowDetailsViewModel @Inject constructor(
     val favourite = _favourite.asStateFlow()
 
     private var _stateSimilarShows =
-        MutableStateFlow<DataStateWrapper<List<TvShows>>>(DataStateWrapper.Idle())
+        MutableStateFlow<DataStateWrapper<List<TvShowsEntity>>>(DataStateWrapper.Idle())
     val stateSimilarShows = _stateSimilarShows.asStateFlow()
 
     init {
@@ -46,21 +43,13 @@ class ShowDetailsViewModel @Inject constructor(
         val encodedShowStr = savedStateHandle.get<String>(ARG_SHOW)
         if(encodedShowStr != null){
             val decodedShowStr = URLDecoder.decode(encodedShowStr, StandardCharsets.UTF_8.toString())
-            val show = gson.fromJson(decodedShowStr, TvShows::class.java)
+            val show = gson.fromJson(decodedShowStr, TvShowsEntity::class.java)
             _state.value = _state.value.copy(
                 show = show
             )
             if(BuildConfig.DEBUG) Log.d(logTag, "state::${state.value}")
 
-            isFavourite()
-
             if(stateSimilarShows.value.data.isNullOrEmpty()) loadSimilarShows(show.id)
-        }
-    }
-
-    private fun isFavourite() = viewModelScope.launch(dispatcherProviderSource.io) {
-        if(dataStoreProvider.getFavourites().contains(state.value.show)){
-            _favourite.value = true
         }
     }
 
@@ -76,11 +65,11 @@ class ShowDetailsViewModel @Inject constructor(
         state.value.show?.let {
             wrapEspressoIdlingResource {
                 if (_favourite.value) {
-                    dataStoreProvider.removeFavourite(it)
+                    //dao.removeFavourite(it)
                     _favourite.value = false
                 } else {
-                    dataStoreProvider.addFavourite(it)
                     _favourite.value = true
+                    //dao.AddFavourite(it)
                 }
             }
         }

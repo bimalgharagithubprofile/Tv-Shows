@@ -1,7 +1,7 @@
 package com.bimalghara.tv_shows.domain.use_cases
 
 import com.bimalghara.tv_shows.domain.model.DataStateWrapper
-import com.bimalghara.tv_shows.domain.model.TvShows
+import com.bimalghara.tv_shows.domain.model.TvShowsEntity
 import com.bimalghara.tv_shows.domain.repository.TVShowsRepositorySource
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -9,7 +9,7 @@ import javax.inject.Inject
 
 class FetchSimilarShowsUseCase @Inject constructor(private val tvShowsRepositorySource: TVShowsRepositorySource) {
 
-    suspend operator fun invoke(id:Int): Flow<DataStateWrapper<List<TvShows>>> = flow {
+    suspend operator fun invoke(id:Int): Flow<DataStateWrapper<List<TvShowsEntity>>> = flow {
         emit(DataStateWrapper.Loading())
         try {
             val result = tvShowsRepositorySource.getSimilarShowsList(id)

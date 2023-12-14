@@ -9,11 +9,11 @@ interface TVShowsService {
 
 
     @GET("trending/tv/week?language=en-US")
-    suspend fun getAllTVShows(): ResponseTvShows
+    suspend fun downloadAllTVShowsFromCloud(): ResponseTvShows
 
 
     @GET("search/tv")
-    suspend fun searchAllTVShows(
+    suspend fun searchAllTVShowsOnCloud(
         @Query("query") query: String,
         @Query("include_adult") includeAdult: Boolean = false,
         @Query("language") language: String = "en-US",
@@ -22,7 +22,7 @@ interface TVShowsService {
 
 
     @GET("tv/{id}/similar?language=en-US&page=1")
-    suspend fun getSimilarShows(@Path("id") id: Int): ResponseTvShows
+    suspend fun getSimilarShowsFromCloud(@Path("id") id: Int): ResponseTvShows
 
 
 }

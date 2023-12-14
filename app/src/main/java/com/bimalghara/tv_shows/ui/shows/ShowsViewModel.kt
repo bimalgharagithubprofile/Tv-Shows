@@ -4,12 +4,12 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bimalghara.tv_shows.common.dispatcher.DispatcherProviderSource
 import com.bimalghara.tv_shows.domain.model.DataStateWrapper
-import com.bimalghara.tv_shows.domain.model.TvShows
-import com.bimalghara.tv_shows.domain.use_cases.FetchTVShowsUseCase
+import com.bimalghara.tv_shows.domain.model.TvShowsEntity
+import com.bimalghara.tv_shows.domain.use_cases.DownloadTVShowsUseCase
+import com.bimalghara.tv_shows.domain.use_cases.GetTVShowsUseCase
 import com.bimalghara.tv_shows.domain.use_cases.SearchTVShowsUseCase
 import com.bimalghara.tv_shows.utils.wrapEspressoIdlingResource
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -17,7 +17,8 @@ import javax.inject.Inject
 @HiltViewModel
 class ShowsViewModel @Inject constructor(
     private val dispatcherProviderSource: DispatcherProviderSource,
-    private val fetchTVShowsUseCase: FetchTVShowsUseCase,
+    private val downloadTVShowsUseCase: DownloadTVShowsUseCase,
+    private val getTVShowsUseCase: GetTVShowsUseCase,
     private val searchTVShowsUseCase: SearchTVShowsUseCase
 ) : ViewModel() {
 
@@ -26,8 +27,8 @@ class ShowsViewModel @Inject constructor(
     private var _stateSearchText = MutableStateFlow("")
     val stateSearchText = _stateSearchText.asStateFlow()
 
-    private var _weeklyShows = MutableStateFlow<DataStateWrapper<List<TvShows>>>(DataStateWrapper.Idle())
-    private var _searchedShows = MutableStateFlow<DataStateWrapper<List<TvShows>>>(DataStateWrapper.Idle())
+    private var _weeklyShows = MutableStateFlow<DataStateWrapper<List<TvShowsEntity>>>(DataStateWrapper.Idle())
+    private var _searchedShows = MutableStateFlow<DataStateWrapper<List<TvShowsEntity>>>(DataStateWrapper.Idle())
     val state = _searchedShows
         .combine(_weeklyShows) { searchResult, weeklyResult ->
             if(stateSearchText.value.isEmpty()){
@@ -42,10 +43,27 @@ class ShowsViewModel @Inject constructor(
             initialValue = _weeklyShows.value
         )
 
-    fun loadData() = viewModelScope.launch(dispatcherProviderSource.io) {
+    init {
+        loadData()
+    }
+
+    fun downloadData() = viewModelScope.launch(dispatcherProviderSource.io) {
+        _weeklyShows.value = DataStateWrapper.Loading()
         wrapEspressoIdlingResource {
-            fetchTVShowsUseCase().collect {
-                _weeklyShows.value = it
+            try {
+                downloadTVShowsUseCase()
+            }catch (e: Exception){
+                _weeklyShows.value = DataStateWrapper.Error(e.localizedMessage)
+            }
+        }
+    }
+
+    private fun loadData() = viewModelScope.launch {
+        wrapEspressoIdlingResource {
+            getTVShowsUseCase().collect {
+                if(it.isNotEmpty()) {
+                    _weeklyShows.value = DataStateWrapper.Success(it)
+                }
             }
         }
     }
