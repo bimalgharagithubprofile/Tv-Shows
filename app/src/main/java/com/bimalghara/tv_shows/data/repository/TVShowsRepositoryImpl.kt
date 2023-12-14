@@ -24,7 +24,8 @@ class TVShowsRepositoryImpl @Inject constructor(
                 val shows = response.toDomain()
                 if (BuildConfig.DEBUG) Log.d(logTag, shows.toString())
 
-                //shows insert into local db
+                //insert shows into local db
+                tvShowsDao.addTvShows(shows)
 
             } else throw Exception("Failed to download TV-Shows from server!")
 

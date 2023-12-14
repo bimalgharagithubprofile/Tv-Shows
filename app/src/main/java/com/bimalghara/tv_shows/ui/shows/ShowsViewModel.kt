@@ -10,6 +10,7 @@ import com.bimalghara.tv_shows.domain.use_cases.GetTVShowsUseCase
 import com.bimalghara.tv_shows.domain.use_cases.SearchTVShowsUseCase
 import com.bimalghara.tv_shows.utils.wrapEspressoIdlingResource
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -53,7 +54,9 @@ class ShowsViewModel @Inject constructor(
             try {
                 downloadTVShowsUseCase()
             }catch (e: Exception){
-                _weeklyShows.value = DataStateWrapper.Error(e.localizedMessage)
+                if(_weeklyShows.value.data.isNullOrEmpty()) {
+                    _weeklyShows.value = DataStateWrapper.Error(e.localizedMessage)
+                }
             }
         }
     }
