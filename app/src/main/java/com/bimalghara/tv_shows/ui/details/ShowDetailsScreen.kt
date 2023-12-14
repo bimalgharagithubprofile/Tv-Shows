@@ -1,18 +1,16 @@
 package com.bimalghara.tv_shows.ui.details
 
 import android.annotation.SuppressLint
-import android.widget.Toast
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -27,6 +25,7 @@ import java.net.URLEncoder
 import java.nio.charset.StandardCharsets
 import java.util.*
 
+@OptIn(ExperimentalMaterial3Api::class)
 @ExperimentalAnimationApi
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
@@ -37,21 +36,23 @@ fun ShowDetailsScreen(
     val state = viewModel.state.collectAsState().value
     val favourite = viewModel.favourite.collectAsState().value
     val stateSimilarShows = viewModel.stateSimilarShows.collectAsState().value
-    val scaffoldState = rememberScaffoldState()
 
     Scaffold(
-        scaffoldState = scaffoldState,
+        modifier = Modifier.fillMaxSize(),
         topBar = {
             TopAppBar(
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    actionIconContentColor = MaterialTheme.colorScheme.onPrimary
+                ),
                 title = {
                     Text(
                         text = state.show?.name ?: stringResource(id = R.string.app_name),
-                        color = MaterialTheme.colors.onPrimary,
+                        color = MaterialTheme.colorScheme.onPrimary,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
                     )
                 },
-                backgroundColor = MaterialTheme.colors.primary,
                 actions = {
                     IconButton(
                         onClick = { viewModel.favoriteClickHandle() }
@@ -71,11 +72,12 @@ fun ShowDetailsScreen(
                 }
             )
         },
-        backgroundColor = MaterialTheme.colors.surface,
-        contentColor = MaterialTheme.colors.onSurface,
-    ) {
+        contentColor = MaterialTheme.colorScheme.onSurface,
+    ) { paddingValues ->
         Column(
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues)
         ) {
             if (!state.show?.posterPath.isNullOrEmpty()) {
                 MyImage(height = 300.dp, url = state.show!!.posterPath)
@@ -83,7 +85,7 @@ fun ShowDetailsScreen(
             if (!state.show?.overview.isNullOrEmpty()) {
                 Text(
                     text = stringResource(id = R.string.descriptions),
-                    style = MaterialTheme.typography.caption,
+                    style = MaterialTheme.typography.titleMedium,
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(start = 10.dp, end = 10.dp, top = 10.dp),
@@ -91,7 +93,7 @@ fun ShowDetailsScreen(
                 )
                 Text(
                     text = state.show!!.overview,
-                    style = MaterialTheme.typography.body1,
+                    style = MaterialTheme.typography.bodyMedium,
                     modifier = Modifier
                         .wrapContentSize()
                         .padding(start = 10.dp, end = 10.dp, top = 15.dp, bottom = 15.dp),
@@ -102,7 +104,7 @@ fun ShowDetailsScreen(
                 is DataStateWrapper.Success -> {
                     Text(
                         text = stringResource(id = R.string.similar_shows),
-                        style = MaterialTheme.typography.caption,
+                        style = MaterialTheme.typography.titleMedium,
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(start = 10.dp, end = 10.dp, top = 10.dp),

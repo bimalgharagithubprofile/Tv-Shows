@@ -1,11 +1,12 @@
 package com.bimalghara.tv_shows.ui.theme
 
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.darkColors
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.darkColorScheme
+import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 
-private val NightColorPalette = darkColors()
-private val DayColorPalette = darkColors(
+private val NightColorPalette = darkColorScheme()
+private val DayColorPalette = lightColorScheme(
     primary = Orange,
     onPrimary = Light,
     background = LightGray,
@@ -17,7 +18,7 @@ private val DayColorPalette = darkColors(
 @Composable
 fun AppTheme(darkTheme: Boolean = false, content: @Composable() () -> Unit) {
     MaterialTheme(
-        colors = DayColorPalette,
+        colorScheme = DayColorPalette,
         typography = Typography,
         shapes = Shapes,
         content = content

@@ -19,6 +19,11 @@ class ShowsViewModel @Inject constructor(
     private val fetchTVShowsUseCase: FetchTVShowsUseCase
 ) : ViewModel() {
 
+    private var _stateSearchActive = MutableStateFlow(false)
+    val stateSearchActive = _stateSearchActive.asStateFlow()
+    private var _stateSearchText = MutableStateFlow("")
+    val stateSearchText = _stateSearchText.asStateFlow()
+
     private var _state =
         MutableStateFlow<DataStateWrapper<List<TvShows>>>(DataStateWrapper.Idle())
     val state = _state.asStateFlow()

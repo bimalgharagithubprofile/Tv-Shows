@@ -6,8 +6,8 @@ import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavType
@@ -15,7 +15,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.bimalghara.tv_shows.domain.model.TvShows
 import com.bimalghara.tv_shows.ui.details.DetailViewUiState.Companion.ARG_SHOW
 import com.bimalghara.tv_shows.ui.details.ShowDetailsScreen
 import com.bimalghara.tv_shows.ui.details.ShowDetailsViewModel
@@ -36,7 +35,7 @@ class MainActivity : AppCompatActivity() {
             AppTheme {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colors.surface
+                    color = MaterialTheme.colorScheme.surface
                 ) {
                     val navController = rememberNavController()
                     NavHost(
