@@ -15,7 +15,9 @@ import com.bimalghara.tv_shows.utils.wrapEspressoIdlingResource
 import com.google.gson.Gson
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import java.net.URLDecoder
 import java.nio.charset.StandardCharsets
@@ -31,7 +33,11 @@ class ShowDetailsViewModel @Inject constructor(
     private val logTag = "ShowDetailsViewModel"
 
     private var _state = MutableStateFlow(DetailViewUiState())
-    val state = _state.asStateFlow()
+    val state = _state.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(),
+        initialValue = _state.value
+    )
 
     private var _favourite = MutableStateFlow(false)
     val favourite = _favourite.asStateFlow()
@@ -43,15 +49,18 @@ class ShowDetailsViewModel @Inject constructor(
     init {
         val gson = Gson()
         val encodedShowStr = savedStateHandle.get<String>(ARG_SHOW)
-        if(encodedShowStr != null){
-            val decodedShowStr = URLDecoder.decode(encodedShowStr, StandardCharsets.UTF_8.toString())
+        if (encodedShowStr != null) {
+            val decodedShowStr =
+                URLDecoder.decode(encodedShowStr, StandardCharsets.UTF_8.toString())
             val show = gson.fromJson(decodedShowStr, TvShowsEntity::class.java)
             _state.value = _state.value.copy(
                 show = show
             )
-            if(BuildConfig.DEBUG) Log.d(logTag, "state::${state.value}")
+            if (BuildConfig.DEBUG) Log.d(logTag, "state::${state.value}")
 
-            if(stateSimilarShows.value.data.isNullOrEmpty()) loadSimilarShows(show.id)
+            _favourite.value = show.isFavourite
+
+            if (stateSimilarShows.value.data.isNullOrEmpty()) loadSimilarShows(show.id)
         }
     }
 
@@ -66,12 +75,18 @@ class ShowDetailsViewModel @Inject constructor(
     fun favoriteClickHandle() = viewModelScope.launch(dispatcherProviderSource.io) {
         state.value.show?.let {
             wrapEspressoIdlingResource {
-                if (_favourite.value) {
-                    val result = favouriteTVShowsUseCase(it, false)
-                    if(result > 0) _favourite.value = false
+                if (it.isFavourite) {
+                    val updatedShow = favouriteTVShowsUseCase(it, false)
+                    if (updatedShow != null) {
+                        _state.value = _state.value.copy(show = updatedShow)
+                        _favourite.value = updatedShow.isFavourite
+                    }
                 } else {
-                    val result = favouriteTVShowsUseCase(it, true)
-                    if(result > 0) _favourite.value = true
+                    val updatedShow = favouriteTVShowsUseCase(it, true)
+                    if (updatedShow != null) {
+                        _state.value = _state.value.copy(show = updatedShow)
+                        _favourite.value = updatedShow.isFavourite
+                    }
                 }
             }
         }
