@@ -6,7 +6,7 @@ import com.google.gson.reflect.TypeToken
 import java.io.InputStreamReader
 
 object DataUtil {
-    fun getDummyCountries(fileName: String): List<TvShowsEntity> {
+    fun getDummyTvShows(fileName: String): List<TvShowsEntity> {
         val inputStream = DataUtil::class.java.getResourceAsStream(fileName)
         val builder = StringBuilder()
         val reader = InputStreamReader(inputStream, "UTF-8")
@@ -14,7 +14,7 @@ object DataUtil {
             builder.append(it)
         }
         val jsonString = builder.toString()
-        val countryListType = object : TypeToken<List<TvShowsEntity>>() {}.type
-        return Gson().fromJson(jsonString, countryListType)
+        val tvShowsEntityType = object : TypeToken<List<TvShowsEntity>>() {}.type
+        return Gson().fromJson(jsonString, tvShowsEntityType)
     }
 }

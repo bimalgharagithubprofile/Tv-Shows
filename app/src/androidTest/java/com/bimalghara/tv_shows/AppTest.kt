@@ -1,17 +1,33 @@
 package com.bimalghara.tv_shows
 
-import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.IdlingRegistry
-import androidx.test.espresso.assertion.ViewAssertions.matches
+import android.content.Context
+import androidx.activity.compose.setContent
+import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.junit4.createAndroidComposeRule
+import androidx.compose.ui.test.onNodeWithTag
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavType
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
+import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.matcher.ViewMatchers.*
-import androidx.test.ext.junit.rules.activityScenarioRule
+import com.bimalghara.tv_shows.common.utils.TestTags
 import com.bimalghara.tv_shows.ui.MainActivity
+import com.bimalghara.tv_shows.ui.details.DetailViewUiState
+import com.bimalghara.tv_shows.ui.details.ShowDetailsScreen
+import com.bimalghara.tv_shows.ui.details.ShowDetailsViewModel
+import com.bimalghara.tv_shows.ui.shows.ShowsViewModel
+import com.bimalghara.tv_shows.ui.shows.TVShowsScreen
+import com.bimalghara.tv_shows.ui.theme.AppTheme
+import com.bimalghara.tv_shows.ui.utils.Screen
 import com.bimalghara.tv_shows.utils.DataStatus
-import com.bimalghara.tv_shows.utils.EspressoIdlingResource
-import com.bimalghara.tv_shows.utils.TestUtil.dataStatus
+import com.bimalghara.tv_shows.utils.TestUtil.dataStatusCloud
+import com.bimalghara.tv_shows.utils.TestUtil.dataStatusLocal
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
-import org.hamcrest.Matchers.not
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -24,75 +40,62 @@ class AppTest {
     val hiltRule = HiltAndroidRule(this)
 
     @get:Rule(order = 1)
-    val activityScenarioRule = activityScenarioRule<MainActivity>()
+    val composeRule = createAndroidComposeRule<MainActivity>()
 
+    private lateinit var context:Context
+
+    @OptIn(ExperimentalAnimationApi::class)
     @Before
     fun setUp() {
         hiltRule.inject()
-        IdlingRegistry.getInstance().register(EspressoIdlingResource.countingIdlingResource)
+        composeRule.activity.setContent {
+            AppTheme {
+                val navController = rememberNavController()
+                NavHost(
+                    navController = navController,
+                    startDestination = Screen.TVShowsScreen.route
+                ) {
+                    composable(route = Screen.TVShowsScreen.route) {
+                        val viewModel = hiltViewModel<ShowsViewModel>()
+                        viewModel.loadData()
+                        TVShowsScreen(navController = navController, viewModel = viewModel)
+                    }
+                    composable(
+                        route = Screen.ShowDetailsScreen.route + "/{${DetailViewUiState.ARG_SHOW}}/{${DetailViewUiState.ARG_SIMILAR_SHOW}}",
+                        arguments = listOf(
+                            navArgument(
+                                name = DetailViewUiState.ARG_SHOW
+                            ) {
+                                type = NavType.StringType
+                            },
+                            navArgument(
+                                name = DetailViewUiState.ARG_SIMILAR_SHOW
+                            ) {
+                                type = NavType.BoolType
+                            }
+                        )
+                    ) {
+                        val viewModel = hiltViewModel<ShowDetailsViewModel>()
+                        ShowDetailsScreen(navController = navController, viewModel = viewModel)
+                    }
+                }
+            }
+        }
+
+        context = ApplicationProvider.getApplicationContext()
     }
 
     @After
     fun tearDown() {
-        IdlingRegistry.getInstance().unregister(EspressoIdlingResource.countingIdlingResource)
-    }
-
-
-    @Test
-    fun displayTvShowsList() {
-        dataStatus = DataStatus.Success
-
-        onView(withId(R.id.progress_bar)).check(matches(not(isDisplayed())))
-        onView(withId(R.id.gridview)).check(matches(isDisplayed()))
-    }
-
-    /*@Test
-    fun launchTvShowDetailsScreen() {
-        dataStatus = DataStatus.Success
-        Intents.init()
-
-        onView(withId(R.id.gridview)).check(matches(isDisplayed()))
-
-        onData(anything())
-            .inAdapterView(withId(R.id.gridview))
-            .atPosition(0)
-            .perform(click())
-
-        intended(hasComponent(DetailComposeActivity::class.java.name))
-        Intents.release()
     }
 
     @Test
-    fun failToDisplayTvShowsData_error_Network() {
-        dataStatus = DataStatus.Fail
-        failureType = FailureType.Network
+    fun loading_isVisible() {
+        dataStatusLocal = DataStatus.EmptyResponse
+        dataStatusCloud = DataStatus.EmptyResponse
 
-        onView(withId(R.id.progress_bar)).check(matches(not(isDisplayed())))
-        onView(withId(R.id.gridview)).check(matches(not(isDisplayed())))
-        onView(withId(R.id.tvErrorMessage)).check(matches(isDisplayed()))
-        onView(withId(R.id.tvErrorMessage)).check(matches(withText("no internet")))
+        composeRule.onNodeWithTag(TestTags.PROGRESS_INDICATOR).assertIsDisplayed()
     }
 
-    @Test
-    fun failToDisplayTvShowsData_error_Timeout() {
-        dataStatus = DataStatus.Fail
-        failureType = FailureType.Timeout
-
-        onView(withId(R.id.progress_bar)).check(matches(not(isDisplayed())))
-        onView(withId(R.id.gridview)).check(matches(not(isDisplayed())))
-        onView(withId(R.id.tvErrorMessage)).check(matches(isDisplayed()))
-        onView(withId(R.id.tvErrorMessage)).check(matches(withText("socket timeout")))
-    }
-
-    @Test
-    fun failToDisplayTvShowsData_error_Unauthorized() {
-        dataStatus = DataStatus.Fail
-        failureType = FailureType.Http
-
-        onView(withId(R.id.progress_bar)).check(matches(not(isDisplayed())))
-        onView(withId(R.id.gridview)).check(matches(not(isDisplayed())))
-        onView(withId(R.id.tvErrorMessage)).check(matches(isDisplayed()))
-        onView(withId(R.id.tvErrorMessage)).check(matches(withText("401 - unauthorized")))
-    }*/
 
 }
