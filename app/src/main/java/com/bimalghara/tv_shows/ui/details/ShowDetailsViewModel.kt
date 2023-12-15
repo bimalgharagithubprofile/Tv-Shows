@@ -14,7 +14,6 @@ import com.bimalghara.tv_shows.domain.use_cases.FetchSimilarTvShowsUseCase
 import com.bimalghara.tv_shows.domain.use_cases.FetchTvShowDetailsUseCase
 import com.bimalghara.tv_shows.ui.details.DetailViewUiState.Companion.ARG_SHOW
 import com.bimalghara.tv_shows.ui.details.DetailViewUiState.Companion.ARG_SIMILAR_SHOW
-import com.bimalghara.tv_shows.utils.wrapEspressoIdlingResource
 import com.google.gson.Gson
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -81,36 +80,30 @@ class ShowDetailsViewModel @Inject constructor(
 
     private fun loadShowDetails(id: Int) = viewModelScope.launch(dispatcherProviderSource.io) {
         _stateDetails.value = DataStateWrapper.Loading()
-        wrapEspressoIdlingResource {
-            fetchTvShowDetailsUseCase(id).collect {
-                _stateDetails.value = it
-            }
+        fetchTvShowDetailsUseCase(id).collect {
+            _stateDetails.value = it
         }
     }
 
     private fun loadSimilarShows(id: Int) = viewModelScope.launch(dispatcherProviderSource.io) {
-        wrapEspressoIdlingResource {
-            fetchSimilarTvShowsUseCase(id).collect {
-                _stateSimilarShows.value = it
-            }
+        fetchSimilarTvShowsUseCase(id).collect {
+            _stateSimilarShows.value = it
         }
     }
 
     fun favoriteClickHandle() = viewModelScope.launch(dispatcherProviderSource.io) {
         state.value.show?.let {
-            wrapEspressoIdlingResource {
-                if (it.isFavourite) {
-                    val updatedShow = favouriteTVShowsUseCase(it, false)
-                    if (updatedShow != null) {
-                        _state.value = _state.value.copy(show = updatedShow)
-                        _favourite.value = updatedShow.isFavourite
-                    }
-                } else {
-                    val updatedShow = favouriteTVShowsUseCase(it, true)
-                    if (updatedShow != null) {
-                        _state.value = _state.value.copy(show = updatedShow)
-                        _favourite.value = updatedShow.isFavourite
-                    }
+            if (it.isFavourite) {
+                val updatedShow = favouriteTVShowsUseCase(it, false)
+                if (updatedShow != null) {
+                    _state.value = _state.value.copy(show = updatedShow)
+                    _favourite.value = updatedShow.isFavourite
+                }
+            } else {
+                val updatedShow = favouriteTVShowsUseCase(it, true)
+                if (updatedShow != null) {
+                    _state.value = _state.value.copy(show = updatedShow)
+                    _favourite.value = updatedShow.isFavourite
                 }
             }
         }

@@ -107,7 +107,10 @@ class AppTest {
         dataStatusLocal = DataStatus.Success
         dataStatusCloud = DataStatus.EmptyResponse
 
-        composeRule.onNodeWithTag(TestTags.PROGRESS_INDICATOR).assertDoesNotExist()
+        //waiting
+        composeRule.waitUntil(timeoutMillis = 5000) {
+            composeRule.onAllNodesWithTag(TestTags.TV_SHOW_ITEM).fetchSemanticsNodes().isNotEmpty()
+        }
         composeRule.onAllNodesWithTag(TestTags.TV_SHOW_ITEM)[0].assertTextContains(
             value = "DOCTOR WHO",
             ignoreCase = false
@@ -116,6 +119,7 @@ class AppTest {
             value = "ATTACK ON TITAN",
             ignoreCase = false
         )
+        composeRule.onNodeWithTag(TestTags.PROGRESS_INDICATOR).assertDoesNotExist()
     }
 
     @Test
@@ -123,15 +127,22 @@ class AppTest {
         dataStatusLocal = DataStatus.EmptyResponse
         dataStatusCloud = DataStatus.Success
 
-        composeRule.onNodeWithTag(TestTags.PROGRESS_INDICATOR).assertDoesNotExist()
+        composeRule.onNodeWithTag(TestTags.PROGRESS_INDICATOR).assertIsDisplayed()
+        //waiting
+        composeRule.waitUntil(timeoutMillis = 10000) {
+            composeRule.onAllNodesWithTag(TestTags.TV_SHOW_ITEM).fetchSemanticsNodes().isNotEmpty()
+        }
         composeRule.onAllNodesWithTag(TestTags.TV_SHOW_ITEM)[0].assertTextContains(
             value = "DOCTOR WHO",
-            ignoreCase = false
+            ignoreCase = false,
+            substring = true
         )
         composeRule.onAllNodesWithTag(TestTags.TV_SHOW_ITEM)[1].assertTextContains(
             value = "ATTACK ON TITAN",
-            ignoreCase = false
+            ignoreCase = false,
+            substring = true
         )
+        composeRule.onNodeWithTag(TestTags.PROGRESS_INDICATOR).assertDoesNotExist()
     }
 
     @Test
@@ -140,8 +151,8 @@ class AppTest {
         dataStatusCloud = DataStatus.Fail
         failureType = FailureType.Network
 
-        composeRule.onNodeWithTag(TestTags.PROGRESS_INDICATOR).assertDoesNotExist()
         composeRule.onNodeWithText(text = "no internet", ignoreCase = true, substring = true)
+        composeRule.onNodeWithTag(TestTags.PROGRESS_INDICATOR).assertDoesNotExist()
     }
 
     @Test

@@ -110,8 +110,4 @@ dependencies {
     debugImplementation "androidx.compose.ui:ui-test-manifest:1.5.4"
     androidTestImplementation 'androidx.test:runner:1.5.2'
 
-
-    // idling for testing
-    implementation "androidx.test.espresso:espresso-idling-resource:3.5.1"
-
 }
