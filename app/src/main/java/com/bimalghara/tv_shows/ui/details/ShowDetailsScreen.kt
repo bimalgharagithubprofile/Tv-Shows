@@ -158,7 +158,7 @@ fun ShowDetailsScreen(
                             style = MaterialTheme.typography.titleMedium,
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(start = 10.dp, end = 10.dp, top = 10.dp),
+                                .padding(start = 10.dp, end = 10.dp, top = 20.dp),
                             textAlign = TextAlign.Start,
                         )
                         LazyRow(
