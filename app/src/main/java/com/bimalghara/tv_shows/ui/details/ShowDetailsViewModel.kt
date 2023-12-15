@@ -11,6 +11,7 @@ import com.bimalghara.tv_shows.domain.model.TvShowsEntity
 import com.bimalghara.tv_shows.domain.use_cases.FavouriteTVShowsUseCase
 import com.bimalghara.tv_shows.domain.use_cases.FetchSimilarShowsUseCase
 import com.bimalghara.tv_shows.ui.details.DetailViewUiState.Companion.ARG_SHOW
+import com.bimalghara.tv_shows.ui.details.DetailViewUiState.Companion.ARG_SIMILAR_SHOW
 import com.bimalghara.tv_shows.utils.wrapEspressoIdlingResource
 import com.google.gson.Gson
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -49,12 +50,14 @@ class ShowDetailsViewModel @Inject constructor(
     init {
         val gson = Gson()
         val encodedShowStr = savedStateHandle.get<String>(ARG_SHOW)
+        val isSimilarShow = savedStateHandle.get<Boolean>(ARG_SIMILAR_SHOW) ?: false
         if (encodedShowStr != null) {
             val decodedShowStr =
                 URLDecoder.decode(encodedShowStr, StandardCharsets.UTF_8.toString())
             val show = gson.fromJson(decodedShowStr, TvShowsEntity::class.java)
             _state.value = _state.value.copy(
-                show = show
+                show = show,
+                isSimilarShow = isSimilarShow
             )
             if (BuildConfig.DEBUG) Log.d(logTag, "state::${state.value}")
 
@@ -62,6 +65,7 @@ class ShowDetailsViewModel @Inject constructor(
 
             if (stateSimilarShows.value.data.isNullOrEmpty()) loadSimilarShows(show.id)
         }
+
     }
 
     private fun loadSimilarShows(id: Int) = viewModelScope.launch(dispatcherProviderSource.io) {

@@ -146,7 +146,7 @@ fun TVShowsScreen(
                                 val encodedShowStr =
                                     URLEncoder.encode(showStr, StandardCharsets.UTF_8.toString())
                                 navController.navigate(
-                                    Screen.ShowDetailsScreen.route + "/$encodedShowStr"
+                                    Screen.ShowDetailsScreen.route + "/$encodedShowStr/${false}"
                                 )
                             }
                         }

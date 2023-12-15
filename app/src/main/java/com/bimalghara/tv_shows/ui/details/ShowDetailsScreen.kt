@@ -54,19 +54,21 @@ fun ShowDetailsScreen(
                     )
                 },
                 actions = {
-                    IconButton(
-                        onClick = { viewModel.favoriteClickHandle() }
-                    ) {
-                        if(favourite){
-                            Icon(
-                                imageVector = Icons.Default.Favorite,
-                                contentDescription = "Remove from favorites"
-                            )
-                        } else {
-                            Icon(
-                                imageVector = Icons.Default.FavoriteBorder,
-                                contentDescription = "Add to favorites"
-                            )
+                    if(state.isSimilarShow == false) {
+                        IconButton(
+                            onClick = { viewModel.favoriteClickHandle() }
+                        ) {
+                            if (favourite) {
+                                Icon(
+                                    imageVector = Icons.Default.Favorite,
+                                    contentDescription = "Remove from favorites"
+                                )
+                            } else {
+                                Icon(
+                                    imageVector = Icons.Default.FavoriteBorder,
+                                    contentDescription = "Add to favorites"
+                                )
+                            }
                         }
                     }
                 }
@@ -121,7 +123,7 @@ fun ShowDetailsScreen(
                                 val encodedShowStr =
                                     URLEncoder.encode(showStr, StandardCharsets.UTF_8.toString())
                                 navController.navigate(
-                                    Screen.ShowDetailsScreen.route + "/$encodedShowStr"
+                                    Screen.ShowDetailsScreen.route + "/$encodedShowStr/${true}"
                                 )
                             }
                         }
