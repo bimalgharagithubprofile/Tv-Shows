@@ -1,0 +1,53 @@
+{
+  "page": 1,
+  "results": [
+    {
+      "adult": false,
+      "backdrop_path": "/vcFW09U4834DyFOeRZpsx9x1D3S.jpg",
+      "id": 57243,
+      "name": "Doctor Who",
+      "original_language": "en",
+      "original_name": "Doctor Who",
+      "overview": "The Doctor is a Time Lord: a 900 year old alien with 2 hearts, part of a gifted civilization who mastered time travel. The Doctor saves planets for a living—more of a hobby actually, and the Doctor's very, very good at it.",
+      "poster_path": "/4edFyasCrkH4MKs6H4mHqlrxA6b.jpg",
+      "media_type": "tv",
+      "genre_ids": [
+        10759,
+        18,
+        10765
+      ],
+      "popularity": 1403.927,
+      "first_air_date": "2005-03-26",
+      "vote_average": 7.462,
+      "vote_count": 2723,
+      "origin_country": [
+        "GB"
+      ]
+    },
+    {
+      "adult": false,
+      "backdrop_path": "/1pmLsPXz5k37BILPH1wq1OV2E7U.jpg",
+      "id": 239770,
+      "name": "Doctor Who",
+      "original_language": "en",
+      "original_name": "Doctor Who",
+      "overview": "The Doctor and friends travel from the dawn of human history to distant alien worlds. And everywhere they go, they find adventure, terror, fun, chases, joy and monsters.",
+      "poster_path": "/91wVL2amQouWhbMfvrVeFNrrHmR.jpg",
+      "media_type": "tv",
+      "genre_ids": [
+        10759,
+        18,
+        10765
+      ],
+      "popularity": 177.541,
+      "first_air_date": "",
+      "vote_average": 7.576,
+      "vote_count": 46,
+      "origin_country": [
+        "GB"
+      ]
+    }
+  ],
+  "total_pages": 1000,
+  "total_results": 20000
+}
