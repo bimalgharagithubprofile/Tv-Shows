@@ -30,6 +30,7 @@ class ShowsViewModel @Inject constructor(
     val stateSearchText = _stateSearchText.asStateFlow()
 
     private var _weeklyShows = MutableStateFlow<DataStateWrapper<List<TvShowsEntity>>>(DataStateWrapper.Idle())
+    val weeklyShows = _weeklyShows.asStateFlow()//for jvm testing class
     private var _searchedShows = MutableStateFlow<DataStateWrapper<List<TvShowsEntity>>>(DataStateWrapper.Idle())
     val state = _searchedShows
         .combine(_weeklyShows) { searchResult, weeklyResult ->
@@ -45,12 +46,8 @@ class ShowsViewModel @Inject constructor(
             initialValue = _weeklyShows.value
         )
 
-    init {
-        loadData()
-    }
 
-
-    private fun loadData() = viewModelScope.launch {
+    fun loadData() = viewModelScope.launch {
         _weeklyShows.value = DataStateWrapper.Loading()
         wrapEspressoIdlingResource {
             getTVShowsUseCase().collect {
