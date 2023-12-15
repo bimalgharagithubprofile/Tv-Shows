@@ -5,6 +5,7 @@ import com.bimalghara.tv_shows.BuildConfig
 import com.bimalghara.tv_shows.data.local.room.TvShowsDao
 import com.bimalghara.tv_shows.data.mapper.toDomain
 import com.bimalghara.tv_shows.data.network.api.TVShowsApi
+import com.bimalghara.tv_shows.domain.model.TvShowDetails
 import com.bimalghara.tv_shows.domain.model.TvShowsEntity
 import com.bimalghara.tv_shows.domain.repository.TVShowsRepositorySource
 import kotlinx.coroutines.flow.Flow
@@ -28,6 +29,21 @@ class TVShowsRepositoryImpl @Inject constructor(
                 tvShowsDao.addTvShows(shows)
 
             } else throw Exception("Failed to download TV-Shows from server!")
+
+        } catch (e: Exception) {
+            throw e
+        }
+    }
+
+    override suspend fun getTVShowDetails(id: Int): TvShowDetails {
+        return try {
+            val response = tvShowsApi.getTVShowDetailsFromCloud(id)
+            if (response.seasons.isNotEmpty()) {
+                //extract cloud data into limited business logic usage data
+                val showDetails = response.toDomain()
+                if (BuildConfig.DEBUG) Log.d(logTag, showDetails.toString())
+                showDetails
+            } else throw Exception("No seasons available!")
 
         } catch (e: Exception) {
             throw e

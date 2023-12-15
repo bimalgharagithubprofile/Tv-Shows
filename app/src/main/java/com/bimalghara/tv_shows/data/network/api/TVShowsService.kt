@@ -1,5 +1,6 @@
 package com.bimalghara.tv_shows.data.network.api
 
+import com.bimalghara.tv_shows.data.model.ResponseTvShowDetails
 import com.bimalghara.tv_shows.data.model.ResponseTvShows
 import retrofit2.http.GET
 import retrofit2.http.Path
@@ -10,6 +11,9 @@ interface TVShowsService {
 
     @GET("trending/tv/week?language=en-US")
     suspend fun downloadAllTVShowsFromCloud(): ResponseTvShows
+
+    @GET("tv/{id}?language=en-US")
+    suspend fun getTVShowDetailsFromCloud(@Path("id") id: Int): ResponseTvShowDetails
 
 
     @GET("search/tv")

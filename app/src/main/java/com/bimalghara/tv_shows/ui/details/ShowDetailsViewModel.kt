@@ -7,9 +7,11 @@ import androidx.lifecycle.viewModelScope
 import com.bimalghara.tv_shows.BuildConfig
 import com.bimalghara.tv_shows.common.dispatcher.DispatcherProviderSource
 import com.bimalghara.tv_shows.domain.model.DataStateWrapper
+import com.bimalghara.tv_shows.domain.model.TvShowDetails
 import com.bimalghara.tv_shows.domain.model.TvShowsEntity
 import com.bimalghara.tv_shows.domain.use_cases.FavouriteTVShowsUseCase
-import com.bimalghara.tv_shows.domain.use_cases.FetchSimilarShowsUseCase
+import com.bimalghara.tv_shows.domain.use_cases.FetchSimilarTvShowsUseCase
+import com.bimalghara.tv_shows.domain.use_cases.FetchTvShowDetailsUseCase
 import com.bimalghara.tv_shows.ui.details.DetailViewUiState.Companion.ARG_SHOW
 import com.bimalghara.tv_shows.ui.details.DetailViewUiState.Companion.ARG_SIMILAR_SHOW
 import com.bimalghara.tv_shows.utils.wrapEspressoIdlingResource
@@ -28,8 +30,9 @@ import javax.inject.Inject
 class ShowDetailsViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     private val dispatcherProviderSource: DispatcherProviderSource,
+    private val fetchTvShowDetailsUseCase: FetchTvShowDetailsUseCase,
     private val favouriteTVShowsUseCase: FavouriteTVShowsUseCase,
-    private val fetchSimilarShowsUseCase: FetchSimilarShowsUseCase
+    private val fetchSimilarTvShowsUseCase: FetchSimilarTvShowsUseCase
 ) : ViewModel() {
     private val logTag = "ShowDetailsViewModel"
 
@@ -38,6 +41,14 @@ class ShowDetailsViewModel @Inject constructor(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(),
         initialValue = _state.value
+    )
+
+    private var _stateDetails =
+        MutableStateFlow<DataStateWrapper<TvShowDetails>>(DataStateWrapper.Idle())
+    val stateDetails = _stateDetails.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(),
+        initialValue = _stateDetails.value
     )
 
     private var _favourite = MutableStateFlow(false)
@@ -63,14 +74,23 @@ class ShowDetailsViewModel @Inject constructor(
 
             _favourite.value = show.isFavourite
 
+            if (stateDetails.value.data == null) loadShowDetails(show.id)
             if (stateSimilarShows.value.data.isNullOrEmpty()) loadSimilarShows(show.id)
         }
+    }
 
+    private fun loadShowDetails(id: Int) = viewModelScope.launch(dispatcherProviderSource.io) {
+        _stateDetails.value = DataStateWrapper.Loading()
+        wrapEspressoIdlingResource {
+            fetchTvShowDetailsUseCase(id).collect {
+                _stateDetails.value = it
+            }
+        }
     }
 
     private fun loadSimilarShows(id: Int) = viewModelScope.launch(dispatcherProviderSource.io) {
         wrapEspressoIdlingResource {
-            fetchSimilarShowsUseCase(id).collect {
+            fetchSimilarTvShowsUseCase(id).collect {
                 _stateSimilarShows.value = it
             }
         }

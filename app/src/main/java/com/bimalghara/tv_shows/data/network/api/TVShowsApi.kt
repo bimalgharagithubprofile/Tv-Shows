@@ -1,5 +1,6 @@
 package com.bimalghara.tv_shows.data.network.api
 
+import com.bimalghara.tv_shows.data.model.ResponseTvShowDetails
 import com.bimalghara.tv_shows.data.model.ResponseTvShows
 import com.bimalghara.tv_shows.data.network.SafeApiRequest
 import com.bimalghara.tv_shows.data.network.retrofit.ApiServiceGenerator
@@ -11,6 +12,9 @@ class TVShowsApi @Inject constructor(private val serviceGenerator: ApiServiceGen
         serviceGenerator.createApiService(TVShowsService::class.java)
 
     suspend fun downloadAllTVShowsFromCloud(): ResponseTvShows = apiRequest(tvShowsService::downloadAllTVShowsFromCloud)
+
+    suspend fun getTVShowDetailsFromCloud(id: Int): ResponseTvShowDetails =
+        apiRequest { tvShowsService.getTVShowDetailsFromCloud(id) }
 
     suspend fun searchAllTVShowsOnCloud(query: String): ResponseTvShows = apiRequest {
         tvShowsService.searchAllTVShowsOnCloud(query = query)

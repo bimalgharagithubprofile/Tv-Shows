@@ -129,7 +129,7 @@ fun TVShowsScreen(
             }
             is DataStateWrapper.Success -> {
                 if (state.data.isNullOrEmpty()) {
-                    MyErrorMessage(stringResource(id = R.string.no_results))
+                    MyErrorMessage(stringResource(id = R.string.no_shows))
                 } else {
                     LazyVerticalGrid(
                         modifier = Modifier

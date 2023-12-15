@@ -3,6 +3,7 @@ package com.bimalghara.tv_shows.ui.details
 import android.annotation.SuppressLint
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
@@ -18,7 +19,9 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.bimalghara.tv_shows.R
 import com.bimalghara.tv_shows.domain.model.DataStateWrapper
+import com.bimalghara.tv_shows.ui.base.MyErrorMessage
 import com.bimalghara.tv_shows.ui.base.MyImage
+import com.bimalghara.tv_shows.ui.theme.DividerGray
 import com.bimalghara.tv_shows.ui.utils.Screen
 import com.google.gson.Gson
 import java.net.URLEncoder
@@ -34,6 +37,7 @@ fun ShowDetailsScreen(
     viewModel: ShowDetailsViewModel
 ) {
     val state = viewModel.state.collectAsState().value
+    val stateDetails = viewModel.stateDetails.collectAsState().value
     val favourite = viewModel.favourite.collectAsState().value
     val stateSimilarShows = viewModel.stateSimilarShows.collectAsState().value
 
@@ -76,55 +80,104 @@ fun ShowDetailsScreen(
         },
         contentColor = MaterialTheme.colorScheme.onSurface,
     ) { paddingValues ->
-        Column(
+        LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
         ) {
             if (!state.show?.posterPath.isNullOrEmpty()) {
-                MyImage(height = 300.dp, url = state.show!!.posterPath)
+                item {
+                    MyImage(height = 300.dp, url = state.show!!.posterPath)
+                }
             }
+
             if (!state.show?.overview.isNullOrEmpty()) {
-                Text(
-                    text = stringResource(id = R.string.descriptions),
-                    style = MaterialTheme.typography.titleMedium,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(start = 10.dp, end = 10.dp, top = 10.dp),
-                    textAlign = TextAlign.Start,
-                )
-                Text(
-                    text = state.show!!.overview,
-                    style = MaterialTheme.typography.bodyMedium,
-                    modifier = Modifier
-                        .wrapContentSize()
-                        .padding(start = 10.dp, end = 10.dp, top = 15.dp, bottom = 15.dp),
-                    textAlign = TextAlign.Justify,
-                )
-            }
-            when (stateSimilarShows) {
-                is DataStateWrapper.Success -> {
+                item {
                     Text(
-                        text = stringResource(id = R.string.similar_shows),
+                        text = stringResource(id = R.string.descriptions),
                         style = MaterialTheme.typography.titleMedium,
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(start = 10.dp, end = 10.dp, top = 10.dp),
                         textAlign = TextAlign.Start,
                     )
-                    LazyRow(
+                    Text(
+                        text = state.show!!.overview,
+                        style = MaterialTheme.typography.bodyMedium,
                         modifier = Modifier
-                            .padding(5.dp)
-                    ) {
-                        items(stateSimilarShows.data!!.size) { index ->
-                            SimilarItem(stateSimilarShows.data[index]) {
-                                val gson = Gson()
-                                val showStr = gson.toJson(stateSimilarShows.data[index])
-                                val encodedShowStr =
-                                    URLEncoder.encode(showStr, StandardCharsets.UTF_8.toString())
-                                navController.navigate(
-                                    Screen.ShowDetailsScreen.route + "/$encodedShowStr/${true}"
-                                )
+                            .wrapContentSize()
+                            .padding(start = 10.dp, end = 10.dp, top = 15.dp, bottom = 15.dp),
+                        textAlign = TextAlign.Justify,
+                    )
+                }
+            }
+
+            when (stateDetails) {
+                is DataStateWrapper.Success -> {
+                    item {
+                        Text(
+                            text = stringResource(id = R.string.seasons),
+                            style = MaterialTheme.typography.titleMedium,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(start = 10.dp, end = 10.dp, top = 10.dp, bottom = 8.dp),
+                            textAlign = TextAlign.Start,
+                        )
+                    }
+                    if(stateDetails.data?.seasons.isNullOrEmpty()){
+                        item {
+                            MyErrorMessage(message = stringResource(id = R.string.no_seasons))
+                        }
+                    } else {
+                        items(stateDetails.data!!.seasons.size) { index ->
+                            Text(
+                                text = stateDetails.data.seasons[index].name + "  -  Episodes (${stateDetails.data.seasons[index].episodeCount})",
+                                style = MaterialTheme.typography.bodyMedium,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(
+                                        start = 20.dp,
+                                        end = 20.dp,
+                                        top = 6.dp,
+                                        bottom = 6.dp
+                                    ),
+                                textAlign = TextAlign.Justify,
+                            )
+                            Divider(color = DividerGray, thickness = 1.dp)
+                        }
+                    }
+                }
+                else -> Unit
+            }
+
+            when (stateSimilarShows) {
+                is DataStateWrapper.Success -> {
+                    item {
+                        Text(
+                            text = stringResource(id = R.string.similar_shows),
+                            style = MaterialTheme.typography.titleMedium,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(start = 10.dp, end = 10.dp, top = 10.dp),
+                            textAlign = TextAlign.Start,
+                        )
+                        LazyRow(
+                            modifier = Modifier
+                                .padding(5.dp)
+                        ) {
+                            items(stateSimilarShows.data!!.size) { index ->
+                                SimilarItem(stateSimilarShows.data[index]) {
+                                    val gson = Gson()
+                                    val showStr = gson.toJson(stateSimilarShows.data[index])
+                                    val encodedShowStr =
+                                        URLEncoder.encode(
+                                            showStr,
+                                            StandardCharsets.UTF_8.toString()
+                                        )
+                                    navController.navigate(
+                                        Screen.ShowDetailsScreen.route + "/$encodedShowStr/${true}"
+                                    )
+                                }
                             }
                         }
                     }

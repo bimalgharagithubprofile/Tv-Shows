@@ -7,3 +7,5 @@ val Dark = Color(0xFF000000)
 val Light = Color(0xFFFFFFFF)
 val LightGray = Color(0xFFECECEC)
 val LightBlue = Color(0xFFE5F0EA)
+val DividerGray = Color(0xFFCECECE)
+

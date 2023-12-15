@@ -15,6 +15,12 @@ object DomainModule {
     fun providesDownloadTVShowsUseCase(tvShowsRepositorySource: TVShowsRepositorySource): DownloadTVShowsUseCase {
         return DownloadTVShowsUseCase(tvShowsRepositorySource)
     }
+
+    @Provides
+    fun providesFetchTvShowDetailsUseCase(tvShowsRepositorySource: TVShowsRepositorySource): FetchTvShowDetailsUseCase {
+        return FetchTvShowDetailsUseCase(tvShowsRepositorySource)
+    }
+
     @Provides
     fun providesGetTVShowsUseCase(tvShowsRepositorySource: TVShowsRepositorySource): GetTVShowsUseCase {
         return GetTVShowsUseCase(tvShowsRepositorySource)
@@ -31,9 +37,10 @@ object DomainModule {
     }
 
     @Provides
-    fun providesFetchSimilarShowsUseCase(tvShowsRepositorySource: TVShowsRepositorySource): FetchSimilarShowsUseCase {
-        return FetchSimilarShowsUseCase(tvShowsRepositorySource)
+    fun providesFetchSimilarShowsUseCase(tvShowsRepositorySource: TVShowsRepositorySource): FetchSimilarTvShowsUseCase {
+        return FetchSimilarTvShowsUseCase(tvShowsRepositorySource)
     }
+
 
 
 }

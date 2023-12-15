@@ -7,7 +7,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
-class FetchSimilarShowsUseCase @Inject constructor(private val tvShowsRepositorySource: TVShowsRepositorySource) {
+class FetchSimilarTvShowsUseCase @Inject constructor(private val tvShowsRepositorySource: TVShowsRepositorySource) {
 
     suspend operator fun invoke(id:Int): Flow<DataStateWrapper<List<TvShowsEntity>>> = flow {
         emit(DataStateWrapper.Loading())
