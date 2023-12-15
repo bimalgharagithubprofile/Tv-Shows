@@ -58,7 +58,7 @@ fun ShowDetailsScreen(
                     )
                 },
                 actions = {
-                    if(state.isSimilarShow == false) {
+                    if (state.isSimilarShow == false) {
                         IconButton(
                             onClick = { viewModel.favoriteClickHandle() }
                         ) {
@@ -124,7 +124,7 @@ fun ShowDetailsScreen(
                             textAlign = TextAlign.Start,
                         )
                     }
-                    if(stateDetails.data?.seasons.isNullOrEmpty()){
+                    if (stateDetails.data?.seasons.isNullOrEmpty()) {
                         item {
                             MyErrorMessage(message = stringResource(id = R.string.no_seasons))
                         }
@@ -143,7 +143,11 @@ fun ShowDetailsScreen(
                                     ),
                                 textAlign = TextAlign.Justify,
                             )
-                            Divider(color = DividerGray, thickness = 1.dp)
+                            Divider(
+                                modifier = Modifier.padding(start = 20.dp, end = 20.dp),
+                                color = DividerGray,
+                                thickness = 1.dp
+                            )
                         }
                     }
                 }
@@ -158,7 +162,7 @@ fun ShowDetailsScreen(
                             style = MaterialTheme.typography.titleMedium,
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(start = 10.dp, end = 10.dp, top = 20.dp),
+                                .padding(start = 10.dp, end = 10.dp, top = 26.dp),
                             textAlign = TextAlign.Start,
                         )
                         LazyRow(
