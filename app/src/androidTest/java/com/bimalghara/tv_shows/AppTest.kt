@@ -6,6 +6,7 @@ import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -27,12 +28,14 @@ import com.bimalghara.tv_shows.utils.FailureType
 import com.bimalghara.tv_shows.utils.TestUtil.dataStatusCloud
 import com.bimalghara.tv_shows.utils.TestUtil.dataStatusLocal
 import com.bimalghara.tv_shows.utils.TestUtil.failureType
+import com.google.common.truth.Truth
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+
 
 @HiltAndroidTest
 class AppTest {
@@ -43,7 +46,8 @@ class AppTest {
     @get:Rule(order = 1)
     val composeRule = createAndroidComposeRule<MainActivity>()
 
-    private lateinit var context:Context
+    private var navController: NavHostController? = null
+    private lateinit var context: Context
 
     @OptIn(ExperimentalAnimationApi::class)
     @Before
@@ -51,15 +55,15 @@ class AppTest {
         hiltRule.inject()
         composeRule.activity.setContent {
             AppTheme {
-                val navController = rememberNavController()
+                navController = rememberNavController()
                 NavHost(
-                    navController = navController,
+                    navController = navController!!,
                     startDestination = Screen.TVShowsScreen.route
                 ) {
                     composable(route = Screen.TVShowsScreen.route) {
                         val viewModel = hiltViewModel<ShowsViewModel>()
                         viewModel.loadData()
-                        TVShowsScreen(navController = navController, viewModel = viewModel)
+                        TVShowsScreen(navController = navController!!, viewModel = viewModel)
                     }
                     composable(
                         route = Screen.ShowDetailsScreen.route + "/{${DetailViewUiState.ARG_SHOW}}/{${DetailViewUiState.ARG_SIMILAR_SHOW}}",
@@ -77,7 +81,7 @@ class AppTest {
                         )
                     ) {
                         val viewModel = hiltViewModel<ShowDetailsViewModel>()
-                        ShowDetailsScreen(navController = navController, viewModel = viewModel)
+                        ShowDetailsScreen(navController = navController!!, viewModel = viewModel)
                     }
                 }
             }
@@ -104,8 +108,14 @@ class AppTest {
         dataStatusCloud = DataStatus.EmptyResponse
 
         composeRule.onNodeWithTag(TestTags.PROGRESS_INDICATOR).assertDoesNotExist()
-        composeRule.onAllNodesWithTag(TestTags.TV_SHOW_ITEM)[0].assertTextContains(value = "DOCTOR WHO", ignoreCase = false)
-        composeRule.onAllNodesWithTag(TestTags.TV_SHOW_ITEM)[1].assertTextContains(value = "ATTACK ON TITAN", ignoreCase = false)
+        composeRule.onAllNodesWithTag(TestTags.TV_SHOW_ITEM)[0].assertTextContains(
+            value = "DOCTOR WHO",
+            ignoreCase = false
+        )
+        composeRule.onAllNodesWithTag(TestTags.TV_SHOW_ITEM)[1].assertTextContains(
+            value = "ATTACK ON TITAN",
+            ignoreCase = false
+        )
     }
 
     @Test
@@ -114,8 +124,14 @@ class AppTest {
         dataStatusCloud = DataStatus.Success
 
         composeRule.onNodeWithTag(TestTags.PROGRESS_INDICATOR).assertDoesNotExist()
-        composeRule.onAllNodesWithTag(TestTags.TV_SHOW_ITEM)[0].assertTextContains(value = "DOCTOR WHO", ignoreCase = false)
-        composeRule.onAllNodesWithTag(TestTags.TV_SHOW_ITEM)[1].assertTextContains(value = "ATTACK ON TITAN", ignoreCase = false)
+        composeRule.onAllNodesWithTag(TestTags.TV_SHOW_ITEM)[0].assertTextContains(
+            value = "DOCTOR WHO",
+            ignoreCase = false
+        )
+        composeRule.onAllNodesWithTag(TestTags.TV_SHOW_ITEM)[1].assertTextContains(
+            value = "ATTACK ON TITAN",
+            ignoreCase = false
+        )
     }
 
     @Test
@@ -126,6 +142,18 @@ class AppTest {
 
         composeRule.onNodeWithTag(TestTags.PROGRESS_INDICATOR).assertDoesNotExist()
         composeRule.onNodeWithText(text = "no internet", ignoreCase = true, substring = true)
+    }
+
+    @Test
+    fun performClick_OnThumbnail_navigateToDetailsScreen() {
+        dataStatusLocal = DataStatus.Success
+        dataStatusCloud = DataStatus.EmptyResponse
+
+        composeRule.onAllNodesWithTag(TestTags.TV_SHOW_ITEM)[1].performClick()
+
+        val route = navController?.currentBackStackEntry?.destination?.route
+
+        Truth.assertThat(route).isEqualTo(Screen.ShowDetailsScreen.route + "/{${DetailViewUiState.ARG_SHOW}}/{${DetailViewUiState.ARG_SIMILAR_SHOW}}")
     }
 
 
