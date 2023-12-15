@@ -50,7 +50,7 @@ class WeeklyTvShowsApiTest {
     fun `BreedsData expected Data`() = runTest{
 
         val mockResponse = MockResponse()
-        val content = DataUtil.getDataFromFile("/dummy_data.json")
+        val content = DataUtil.getRawDataFromFile("/dummy_data.json")
         mockResponse.setBody(content)
         mockResponse.setResponseCode(code = 200)
         mockWebServer.enqueue(mockResponse)

@@ -23,8 +23,10 @@ import com.bimalghara.tv_shows.ui.shows.TVShowsScreen
 import com.bimalghara.tv_shows.ui.theme.AppTheme
 import com.bimalghara.tv_shows.ui.utils.Screen
 import com.bimalghara.tv_shows.utils.DataStatus
+import com.bimalghara.tv_shows.utils.FailureType
 import com.bimalghara.tv_shows.utils.TestUtil.dataStatusCloud
 import com.bimalghara.tv_shows.utils.TestUtil.dataStatusLocal
+import com.bimalghara.tv_shows.utils.TestUtil.failureType
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import org.junit.After
@@ -97,13 +99,33 @@ class AppTest {
     }
 
     @Test
-    fun loadShows_isGridVisible() {
+    fun loadShowsFrom_cached_isGridVisible() {
         dataStatusLocal = DataStatus.Success
+        dataStatusCloud = DataStatus.EmptyResponse
+
+        composeRule.onNodeWithTag(TestTags.PROGRESS_INDICATOR).assertDoesNotExist()
+        composeRule.onAllNodesWithTag(TestTags.TV_SHOW_ITEM)[0].assertTextContains(value = "DOCTOR WHO", ignoreCase = false)
+        composeRule.onAllNodesWithTag(TestTags.TV_SHOW_ITEM)[1].assertTextContains(value = "ATTACK ON TITAN", ignoreCase = false)
+    }
+
+    @Test
+    fun loadShowsFrom_cloud_then_cached_isGridVisible() {
+        dataStatusLocal = DataStatus.EmptyResponse
         dataStatusCloud = DataStatus.Success
 
         composeRule.onNodeWithTag(TestTags.PROGRESS_INDICATOR).assertDoesNotExist()
         composeRule.onAllNodesWithTag(TestTags.TV_SHOW_ITEM)[0].assertTextContains(value = "DOCTOR WHO", ignoreCase = false)
-        composeRule.onAllNodesWithTag(TestTags.TV_SHOW_ITEM)[1].assertTextContains(value = "DOCTOR WHO", ignoreCase = false)
+        composeRule.onAllNodesWithTag(TestTags.TV_SHOW_ITEM)[1].assertTextContains(value = "ATTACK ON TITAN", ignoreCase = false)
+    }
+
+    @Test
+    fun tryToLoadShows_ButErrorOf_Network_isVisible() {
+        dataStatusLocal = DataStatus.EmptyResponse
+        dataStatusCloud = DataStatus.Fail
+        failureType = FailureType.Network
+
+        composeRule.onNodeWithTag(TestTags.PROGRESS_INDICATOR).assertDoesNotExist()
+        composeRule.onNodeWithText(text = "no internet", ignoreCase = true, substring = true)
     }
 
 

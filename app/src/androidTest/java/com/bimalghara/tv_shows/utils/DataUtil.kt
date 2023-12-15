@@ -1,20 +1,24 @@
 package com.bimalghara.tv_shows.utils
 
 import com.bimalghara.tv_shows.domain.model.TvShowsEntity
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
-import java.io.InputStreamReader
 
 object DataUtil {
-    fun getDummyTvShows(fileName: String): List<TvShowsEntity> {
-        val inputStream = DataUtil::class.java.getResourceAsStream(fileName)
-        val builder = StringBuilder()
-        val reader = InputStreamReader(inputStream, "UTF-8")
-        reader.readLines().forEach {
-            builder.append(it)
-        }
-        val jsonString = builder.toString()
-        val tvShowsEntityType = object : TypeToken<List<TvShowsEntity>>() {}.type
-        return Gson().fromJson(jsonString, tvShowsEntityType)
-    }
+    val dummyTvShows = listOf(
+        TvShowsEntity(
+            id = 57243,
+            name = "Doctor Who",
+            overview = "The Doctor is a Time Lord",
+            posterPath = "/4edFyasCrkH4MKs6H4mHqlrxA6b.jpg",
+            popularity = 1403.927,
+            isFavourite = true
+        ),
+        TvShowsEntity(
+            id = 1429,
+            name = "Attack on Titan",
+            overview = "The Doctor and friends travel",
+            posterPath = "/hTP1DtLGFamjfu8WqjnuQdP1n4i.jpg",
+            popularity = 177.541,
+            isFavourite = false
+        )
+    )
 }

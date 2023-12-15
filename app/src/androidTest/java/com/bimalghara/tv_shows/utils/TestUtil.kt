@@ -5,4 +5,5 @@ object TestUtil {
     var dataStatusCloud: DataStatus = DataStatus.Success
     var failureType: FailureType = FailureType.Network
 
+
 }
