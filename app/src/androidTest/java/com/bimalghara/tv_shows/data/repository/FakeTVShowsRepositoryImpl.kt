@@ -73,7 +73,7 @@ class FakeTVShowsRepositoryImpl @Inject constructor(
                         ),
                         TvShowsEntity(
                             id = 239770,
-                            name = "Doctor Me",
+                            name = "Doctor Who",
                             overview = "The Doctor and friends travel",
                             posterPath = "/91wVL2amQouWhbMfvrVeFNrrHmR.jpg",
                             popularity = 177.541,

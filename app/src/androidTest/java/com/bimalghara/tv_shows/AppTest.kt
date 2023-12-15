@@ -3,9 +3,8 @@ package com.bimalghara.tv_shows
 import android.content.Context
 import androidx.activity.compose.setContent
 import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
-import androidx.compose.ui.test.onNodeWithTag
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -95,6 +94,16 @@ class AppTest {
         dataStatusCloud = DataStatus.EmptyResponse
 
         composeRule.onNodeWithTag(TestTags.PROGRESS_INDICATOR).assertIsDisplayed()
+    }
+
+    @Test
+    fun loadShows_isGridVisible() {
+        dataStatusLocal = DataStatus.Success
+        dataStatusCloud = DataStatus.Success
+
+        composeRule.onNodeWithTag(TestTags.PROGRESS_INDICATOR).assertDoesNotExist()
+        composeRule.onAllNodesWithTag(TestTags.TV_SHOW_ITEM)[0].assertTextContains(value = "DOCTOR WHO", ignoreCase = false)
+        composeRule.onAllNodesWithTag(TestTags.TV_SHOW_ITEM)[1].assertTextContains(value = "DOCTOR WHO", ignoreCase = false)
     }
 
 

@@ -8,11 +8,13 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.bimalghara.tv_shows.R
+import com.bimalghara.tv_shows.common.utils.TestTags
 import com.bimalghara.tv_shows.domain.model.TvShowsEntity
 import com.bimalghara.tv_shows.ui.base.MyImage
 import java.util.*
@@ -28,7 +30,8 @@ fun GridItem(tvSHow: TvShowsEntity, onItemClick: () -> Unit) {
             .fillMaxWidth()
             .clickable {
                 onItemClick()
-            },
+            }
+            .testTag(TestTags.TV_SHOW_ITEM),
         elevation = CardDefaults.cardElevation(
             defaultElevation = 8.dp
         ),
