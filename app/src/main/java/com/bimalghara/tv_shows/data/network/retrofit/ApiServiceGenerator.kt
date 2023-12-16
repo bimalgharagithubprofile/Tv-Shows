@@ -24,6 +24,8 @@ class ApiServiceGenerator @Inject constructor() {
     private val okHttpBuilder: OkHttpClient.Builder = OkHttpClient.Builder()
     private val retrofit: Retrofit
 
+    //keys must be stored in safer place and not here (this is just for demo app)
+    //safer place like - Android Keychain (TEE) or FCM or AccountManager etc..
     private val bearerToken = "eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJhMzdkZWEzNTc0ZjZhNmI2NGU4OGVjYmMwOTNhODdkNyIsInN1YiI6IjY1Nzk0YmFmZWM4YTQzMDBjMzNhYmI4MCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.l3p3LHJVsrwtwoC2j8KycGXHRSeVBWbR-wUz_Emvf9Y"
 
     private var headerInterceptor = Interceptor { chain ->
